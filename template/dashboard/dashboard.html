@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — StockManager Pro</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'style.css' %}"/>
+  <link rel="stylesheet" href="{% static 'dashboard.css' %}"/>
+</head>
+
+<body>
+
+<div class="layout">
+
+  <!-- ═════════ SIDEBAR ═════════ -->
+  <aside class="sidebar">
+
+    <div class="sidebar-logo">
+      <img src="{% static 'logo.png' %}" alt="Logo"/>
+      <div class="sidebar-logo-text">
+        <strong>StockManager</strong>
+        <span>Multi-Agences</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Principal</div>
+
+      <a href="{% url 'dashboard' %}" class="nav-item active">
+        <span>Tableau de bord</span>
+      </a>
+
+      <a href="#" class="nav-item">Agences</a>
+      <a href="#" class="nav-item">Produits</a>
+      <a href="#" class="nav-item">Clients</a>
+      <a href="{% url 'employee_list' %}" class="nav-item">Employés</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Gestion</div>
+
+      <a href="#" class="nav-item">Ventes</a>
+      <a href="#" class="nav-item">Transferts</a>
+      <a href="#" class="nav-item">Rapports</a>
+      <a href="#" class="nav-item">Paramètres</a>
+      <a href="{% url 'Logout' %}" class="btn-danger">Logout</a>
+    </div>
+
+  </aside>
+
+  <!-- ═════════ MAIN ═════════ -->
+  <div class="main">
+
+    <header class="topbar">
+      <h2>Tableau de bord</h2>
+
+      <div>
+        👤 {{ request.user.username }}
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- STATS -->
+      <div class="stats-grid">
+
+        <div class="stat-card blue">
+          <div class="stat-label">Agences</div>
+          <div class="stat-value">{{ total_agencies|default:"0" }}</div>
+        </div>
+
+        <div class="stat-card orange">
+          <div class="stat-label">Produits</div>
+          <div class="stat-value">{{ total_products|default:"0" }}</div>
+        </div>
+
+        <div class="stat-card teal">
+          <div class="stat-label">Clients</div>
+          <div class="stat-value">{{ total_customers|default:"0" }}</div>
+        </div>
+
+        <div class="stat-card purple">
+          <div class="stat-label">Employés</div>
+          <div class="stat-value">{{ total_employees|default:"0" }}</div>
+        </div>
+
+      </div>
+
+      <!-- RECENT ACTIVITY -->
+      <div class="panel-card">
+        <h3>Activité récente</h3>
+
+        <table class="activity-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Agence</th>
+              <th>Utilisateur</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for activity in recent_activities %}
+            <tr>
+              <td>{{ activity.type }}</td>
+              <td>{{ activity.agency.name }}</td>
+              <td>{{ activity.user.username }}</td>
+              <td>{{ activity.created_at }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4">Aucune activité récente</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- STOCK BY AGENCY -->
+      <div class="panel-card">
+        <h3>Stock par agence</h3>
+
+        <div class="stock-list">
+
+          {% for agency in stock_by_agency %}
+          <div class="stock-item">
+            <span>{{ agency.name }}</span>
+            <span>{{ agency.total_products }}</span>
+          </div>
+          {% empty %}
+          <p>Aucune donnée disponible</p>
+          {% endfor %}
+
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+</div>
+
+<script src="{% static 'app.js' %}"></script>
+<script src="{% static 'dashboard.js' %}"></script>
+
+</body>
+</html>

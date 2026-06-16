@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Employés — Gestion de Stock</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'style.css' %}"/>
+  <link rel="stylesheet" href="{% static 'employees.css' %}"/>
+</head>
+<body>
+
+  <!-- ── Toolbar ── -->
+  <div class="toolbar">
+    <div class="lang-pill">
+      <button class="lang-btn active" id="btnFR" onclick="setLang('fr')">FR</button>
+      <div class="lang-sep"></div>
+      <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+      </svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1"  x2="12" y2="3"/>  <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>  <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- ── Animated background ── -->
+  <div class="bg"></div>
+  <div class="grid-lines"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- ── Main container ── -->
+  <div class="page-wrap">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="header-left">
+        <img src="{% static 'logo.png' %}" alt="Logo" class="header-logo"/>
+        <div>
+          <div class="header-title" data-i18n="pageTitle">Employés</div>
+          <div class="header-sub" data-i18n="pageSub">Gestion Multi-Agences</div>
+        </div>
+      </div>
+      <button class="btn-add" onclick="openModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span data-i18n="btnAdd">Ajouter</span>
+      </button>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label" data-i18n="statTotal">Total employés</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statDouala">0</div>
+        <div class="stat-label">Douala</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statYaounde">0</div>
+        <div class="stat-label">Yaoundé</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statBafoussam">0</div>
+        <div class="stat-label">Bafoussam</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="searchInput" data-i18n-ph="searchPh" placeholder="Rechercher un employé…" oninput="filterTable()"/>
+      </div>
+      <select class="filter-select" id="agencyFilter" onchange="filterTable()">
+        <option value="" data-i18n="filterAll">Toutes les agences</option>
+        <option value="Douala">Douala</option>
+        <option value="Yaoundé">Yaoundé</option>
+        <option value="Bafoussam">Bafoussam</option>
+      </select>
+      <select class="filter-select" id="roleFilter" onchange="filterTable()">
+        <option value="" data-i18n="filterRole">Tous les rôles</option>
+        <option value="Admin">Admin</option>
+        <option value="Manager">Manager</option>
+        <option value="Agent">Agent</option>
+        <option value="Caissier">Caissier</option>
+      </select>
+    </div>
+
+    <!-- Table card -->
+    <div class="table-card">
+      <table id="employeeTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable('id')"       class="sortable" data-i18n="colId">ID <span class="sort-icon">↕</span></th>
+            <th onclick="sortTable('name')"     class="sortable" data-i18n="colName">Nom <span class="sort-icon">↕</span></th>
+            <th onclick="sortTable('role')"     class="sortable" data-i18n="colRole">Rôle <span class="sort-icon">↕</span></th>
+            <th onclick="sortTable('agency')"   class="sortable" data-i18n="colAgency">Agence <span class="sort-icon">↕</span></th>
+            <th data-i18n="colActions">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+       {% for employee in employees %}
+        </tbody>
+      </table>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="emptyState" style="display:none">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+        <p data-i18n="emptyState">Aucun employé trouvé</p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+
+  </div><!-- /.page-wrap -->
+
+  <!-- ══════════════════════════════════════
+       ADD / EDIT MODAL
+  ══════════════════════════════════════ -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" id="modalTitle" data-i18n="modalAddTitle">Ajouter un employé</span>
+        <button class="modal-close" onclick="closeModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <form id="employeeForm" onsubmit="saveEmployee(event)">
+        <input type="hidden" id="editId"/>
+        <div class="modal-grid">
+          <div class="form-field">
+            <label data-i18n="colId">ID</label>
+            <input type="text" id="fId" placeholder="EMP-001" required/>
+          </div>
+          <div class="form-field">
+            <label data-i18n="fieldFirstName">Prénom</label>
+            <input type="text" id="fFirst" data-i18n-ph="phFirstName" placeholder="Prénom" required/>
+          </div>
+          <div class="form-field">
+            <label data-i18n="fieldLastName">Nom</label>
+            <input type="text" id="fLast" data-i18n-ph="phLastName" placeholder="Nom" required/>
+          </div>
+          <div class="form-field">
+            <label data-i18n="colRole">Rôle</label>
+            <select id="fRole" required>
+              <option value="">—</option>
+              <option value="Admin">Admin</option>
+              <option value="Manager">Manager</option>
+              <option value="Agent">Agent</option>
+              <option value="Caissier">Caissier</option>
+            </select>
+          </div>
+          <div class="form-field full">
+            <label data-i18n="colAgency">Agence</label>
+            <select id="fAgency" required>
+              <option value="">—</option>
+              <option value="Douala">Siège Principal — Douala</option>
+              <option value="Yaoundé">Agence Yaoundé</option>
+              <option value="Bafoussam">Agence Bafoussam</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="closeModal()" data-i18n="btnCancel">Annuler</button>
+          <button type="submit" class="btn-save" id="btnSave" data-i18n="btnSave">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete confirm toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="{% static 'employees.js' %}"></script>
+</body>
+</html>
