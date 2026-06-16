@@ -51,10 +51,10 @@
           <div class="header-sub" data-i18n="pageSub">Gestion Multi-Agences</div>
         </div>
       </div>
-      <button class="btn-add" onclick="openModal()">
+      <a href="{% url 'add_employee' %}" class="btn-add">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         <span data-i18n="btnAdd">Ajouter</span>
-      </button>
+      </a>
     </div>
 
     <!-- Stats bar -->
@@ -113,7 +113,37 @@
           </tr>
         </thead>
         <tbody id="tableBody">
-       {% for employee in employees %}
+
+            {% for employee in employees %}
+            <tr>
+                <td>{{ employee.employee_id }}</td>
+
+                <td>
+                    {{ employee.first_name }} {{ employee.last_name }}
+                </td>
+
+                <td>
+                    {{ employee.role }}
+                </td>
+
+                <td>
+                    {{ employee.agency.name }}
+                </td>
+
+                <td>
+
+                    <a href="{% url 'employee_edit' employee.id %}">
+                        Edit
+                    </a>
+
+                    <a href="{% url 'employee_delete' employee.id %}">
+                        Delete
+                    </a>
+
+                </td>
+            </tr>
+            {% endfor %}
+
         </tbody>
       </table>
 
@@ -135,7 +165,7 @@
   <!-- ══════════════════════════════════════
        ADD / EDIT MODAL
   ══════════════════════════════════════ -->
-  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <!--<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
     <div class="modal">
       <div class="modal-header">
         <span class="modal-title" id="modalTitle" data-i18n="modalAddTitle">Ajouter un employé</span>
@@ -186,7 +216,7 @@
         </div>
       </form>
     </div>
-  </div>
+  </div>-->
 
   <!-- Delete confirm toast -->
   <div class="toast" id="toast"></div>
