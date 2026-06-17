@@ -502,3 +502,120 @@ td {
   .filters { flex-direction: column; }
   th:nth-child(5), td:nth-child(5) { display: none; } /* hide actions on very small */
 }
+
+
+.cell-name{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.avatar{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-weight:bold;
+    background:red !important;
+}
+
+.name-text{
+    font-weight:600;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 12px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.badge-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+}
+
+.badge-manager{
+    background:rgba(0,155,229,.15);
+    color:#009be5;
+}
+
+.badge-manager .badge-dot{
+    background:#009be5;
+}
+
+.agency-pill{
+    background:rgba(0,155,229,.15);
+    color:#009be5;
+    padding:4px 12px;
+    border-radius:8px;
+}
+
+.cell-actions{
+    display:flex;
+    gap:10px;
+}
+
+.action-btn{
+    width:34px;
+    height:32px;
+    border-radius:8px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(0,155,229,.2);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#7a9ab8;
+    text-decoration:none;
+    transition:.25s ease;
+}
+
+.action-btn svg{
+    width:14px;
+    height:14px;
+}
+
+.action-btn.edit:hover{
+    color:#009be5;
+    border-color:#009be5;
+}
+
+.action-btn.del:hover{
+    color:#ff4d6a;
+    border-color:#ff4d6a;
+}
+
+.badge-admin{
+    background:rgba(240,140,0,.15);
+    color:#f08c00;
+}
+
+.badge-agent{
+    background:rgba(39,174,96,.15);
+    color:#27ae60;
+}
+.badge-admin .badge-dot{
+    background:#f08c00;
+}
+
+.badge-manager .badge-dot{
+    background:#009be5;
+}
+
+.badge-agent .badge-dot{
+    background:#27ae60;
+}
+
+tbody tr{
+    transition:.25s;
+}
+
+tbody tr:hover{
+    background:rgba(0,155,229,.06);
+}

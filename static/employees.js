@@ -165,3 +165,12 @@ function filterTable() {
         empty.style.display = "none";
     }
 }
+function confirmDelete(url) {
+
+    if(confirm("Voulez-vous supprimer cet employé ?")){
+
+        window.location.href = url;
+
+    }
+
+}
