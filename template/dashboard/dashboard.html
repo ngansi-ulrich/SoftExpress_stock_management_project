@@ -1,151 +1,472 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="fr" data-theme="dark">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard — StockManager Pro</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="{% static 'style.css' %}"/>
-  <link rel="stylesheet" href="{% static 'dashboard.css' %}"/>
-</head>
+{% block title %}Dashboard | SoftExpress ERP{% endblock %}
 
-<body>
+{% block content %}
 
-<div class="layout">
+<div class="container-fluid">
 
-  <!-- ═════════ SIDEBAR ═════════ -->
-  <aside class="sidebar">
+    <!-- ===========================
+        Page Header
+    ============================ -->
 
-    <div class="sidebar-logo">
-      <img src="{% static 'logo.png' %}" alt="Logo"/>
-      <div class="sidebar-logo-text">
-        <strong>StockManager</strong>
-        <span>Multi-Agences</span>
-      </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                Dashboard
+            </h2>
+
+            <p class="text-muted">
+                Welcome back,
+                <strong>{{ request.user.first_name|default:request.user.username }}</strong>.
+                Here's today's business overview.
+            </p>
+
+        </div>
+
+        <div>
+
+            <button class="btn btn-primary">
+
+                <i class="bi bi-plus-circle me-2"></i>
+
+                New Sale
+
+            </button>
+
+        </div>
+
     </div>
 
-    <div class="nav-section">
-      <div class="nav-section-label">Principal</div>
+    <!-- ===========================
+        Statistics Cards
+    ============================ -->
 
-      <a href="{% url 'dashboard' %}" class="nav-item active">
-        <span>Tableau de bord</span>
-      </a>
+    <div class="row g-4 mb-4">
 
-      <a href="{% url 'agency_list' %}" class="nav-item">Agences</a>
-      <a href="#" class="nav-item">Produits</a>
-      <a href="#" class="nav-item">Clients</a>
-      <a href="{% url 'employee_list' %}" class="nav-item">Employés</a>
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card dashboard-card fade-up">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <p>Total Products</p>
+
+                        <h2>2,547</h2>
+
+                        <span class="text-success">
+
+                            <i class="bi bi-arrow-up"></i>
+
+                            +12%
+
+                        </span>
+
+                    </div>
+
+                    <div class="icon bg-primary-soft">
+
+                        <i class="bi bi-box-seam"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card dashboard-card fade-up">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <p>Revenue Today</p>
+
+                        <h2 class="counter" data-target="2547">2.7M FCFA</h2>
+
+                        <span class="text-success">
+
+                            <i class="bi bi-arrow-up"></i>
+
+                            +8%
+
+                        </span>
+
+                    </div>
+
+                    <div class="icon bg-success-soft">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card dashboard-card fade-up">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <p>Employees</p>
+
+                        <h2 class="counter" data-target="2547">38</h2>
+
+                        <span class="text-primary">
+
+                            Active
+
+                        </span>
+
+                    </div>
+
+                    <div class="icon bg-warning-soft">
+
+                        <i class="bi bi-people"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card dashboard-card fade-up">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <p>Low Stock</p>
+
+                        <h2 class="counter" data-target="2547">17</h2>
+
+                        <span class="text-danger">
+
+                            Needs Attention
+
+                        </span>
+
+                    </div>
+
+                    <div class="icon bg-danger-soft">
+
+                        <i class="bi bi-exclamation-triangle"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="nav-section">
-      <div class="nav-section-label">Gestion</div>
+    <!-- ===========================
+        Charts
+    ============================ -->
 
-      <a href="#" class="nav-item">Ventes</a>
-      <a href="#" class="nav-item">Transferts</a>
-      <a href="#" class="nav-item">Rapports</a>
-      <a href="#" class="nav-item">Paramètres</a>
-      <a href="{% url 'Logout' %}" class="btn-danger">Logout</a>
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-8">
+
+            <div class="card chart-card">
+
+                <div class="card-header bg-white border-0">
+
+                    <h5 class="fw-bold mb-0">
+
+                        Revenue Overview
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="revenueChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <div class="card chart-card">
+
+                <div class="card-header bg-white border-0">
+
+                    <h5 class="fw-bold mb-0">
+
+                        Sales by Agency
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="agencyChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-  </aside>
+    <!-- ===========================
+        Tables & Alerts
+    ============================ -->
 
-  <!-- ═════════ MAIN ═════════ -->
-  <div class="main">
+    <div class="row g-4">
 
-    <header class="topbar">
-      <h2>Tableau de bord</h2>
+        <!-- Recent Sales -->
 
-      <div>
-        👤 {{ request.user.username }}
-      </div>
-    </header>
+        <div class="col-lg-8">
 
-    <main class="content">
+            <div class="card">
 
-      <!-- STATS -->
-      <div class="stats-grid">
+                <div class="card-header bg-white">
 
-        <div class="stat-card blue">
-          <div class="stat-label">Agences</div>
-          <div class="stat-value">{{ total_agencies|default:"0" }}</div>
+                    <h5 class="fw-bold">
+
+                        Recent Sales
+
+                    </h5>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Invoice</th>
+
+                                <th>Client</th>
+
+                                <th>Agency</th>
+
+                                <th>Amount</th>
+
+                                <th>Status</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>#INV001</td>
+
+                                <td>John Doe</td>
+
+                                <td>Douala</td>
+
+                                <td>350,000 FCFA</td>
+
+                                <td>
+
+                                    <span class="badge bg-success">
+
+                                        Paid
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>#INV002</td>
+
+                                <td>Jane Smith</td>
+
+                                <td>Yaoundé</td>
+
+                                <td>510,000 FCFA</td>
+
+                                <td>
+
+                                    <span class="badge bg-warning">
+
+                                        Pending
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>#INV003</td>
+
+                                <td>Peter Brown</td>
+
+                                <td>Bafoussam</td>
+
+                                <td>160,000 FCFA</td>
+
+                                <td>
+
+                                    <span class="badge bg-success">
+
+                                        Paid
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="stat-card orange">
-          <div class="stat-label">Produits</div>
-          <div class="stat-value">{{ total_products|default:"0" }}</div>
+        <!-- Right Panel -->
+
+        <div class="col-lg-4">
+
+            <!-- Low Stock -->
+
+            <div class="card mb-4">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="fw-bold">
+
+                        Low Stock
+
+                    </h5>
+
+                </div>
+
+                <ul class="list-group list-group-flush">
+
+                    <li class="list-group-item">
+
+                        HP EliteBook 840
+
+                        <span class="badge bg-danger float-end">
+
+                            2 Left
+
+                        </span>
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        Logitech Mouse
+
+                        <span class="badge bg-warning float-end">
+
+                            5 Left
+
+                        </span>
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        Dell Monitor
+
+                        <span class="badge bg-danger float-end">
+
+                            1 Left
+
+                        </span>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <!-- Activities -->
+
+            <div class="card">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="fw-bold">
+
+                        Recent Activity
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <p>
+
+                        ✅ Product added
+
+                    </p>
+
+                    <p>
+
+                        📦 Stock transferred
+
+                    </p>
+
+                    <p>
+
+                        👤 New employee registered
+
+                    </p>
+
+                    <p>
+
+                        💰 New sale completed
+
+                    </p>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="stat-card teal">
-          <div class="stat-label">Clients</div>
-          <div class="stat-value">{{ total_customers|default:"0" }}</div>
-        </div>
-
-        <div class="stat-card purple">
-          <div class="stat-label">Employés</div>
-          <div class="stat-value">{{ total_employees|default:"0" }}</div>
-        </div>
-
-      </div>
-
-      <!-- RECENT ACTIVITY -->
-      <div class="panel-card">
-        <h3>Activité récente</h3>
-
-        <table class="activity-table">
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Agence</th>
-              <th>Utilisateur</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {% for activity in recent_activities %}
-            <tr>
-              <td>{{ activity.type }}</td>
-              <td>{{ activity.agency.name }}</td>
-              <td>{{ activity.user.username }}</td>
-              <td>{{ activity.created_at }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td colspan="4">Aucune activité récente</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      <!-- STOCK BY AGENCY -->
-      <div class="panel-card">
-        <h3>Stock par agence</h3>
-
-        <div class="stock-list">
-
-          {% for agency in stock_by_agency %}
-          <div class="stock-item">
-            <span>{{ agency.name }}</span>
-            <span>{{ agency.total_products }}</span>
-          </div>
-          {% empty %}
-          <p>Aucune donnée disponible</p>
-          {% endfor %}
-
-        </div>
-      </div>
-
-    </main>
-
-  </div>
+    </div>
 
 </div>
 
-<script src="{% static 'app.js' %}"></script>
-<script src="{% static 'dashboard.js' %}"></script>
-
-</body>
-</html>
+{% endblock %}

@@ -1,76 +1,295 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="fr" data-theme="dark">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Agences — StockManager Pro</title>
-    <link rel="stylesheet" href="{% static 'agency.css' %}"/>
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <div class="bg"></div>
-    <div class="grid-lines"></div>
+{% block title %}
+Agencies
+{% endblock %}
 
-    <div class="page">
-        <div class="page-header">
-            <div class="page-title">Gestion des Agences</div>
-            <button class="btn-add" onclick="openModal()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Ajouter Agence
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+
+                Agencies
+
+            </h2>
+
+            <p class="text-muted">
+
+                Manage all SoftExpress agencies.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#agencyModal">
+
+                <i class="bi bi-plus-circle me-2"></i>
+
+                Add Agency
+
             </button>
+
         </div>
 
-        <div class="table-card">
-        <table class="emp-table" id="agencyTable">
-            <thead>
-                <tr>
-                    <th data-i18n="colName">Nom Agence</th>
-                    <th data-i18n="colCity">Ville</th>
-                    <th data-i18n="colAddress">Adresse</th>
-                    <th data-i18n="colPhone">Téléphone</th>
-                    <th data-i18n="colActions">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="agencyBody">
-                {% for agency in agencies %}
-                <tr class="row-in">
-                    <td>{{ agency.name }}</td>
-                    <td>{{ agency.city }}</td>
-                    <td>{{ agency.address }}</td>
-                    <td>{{ agency.phone }}</td>
-                    <td>
-                        <div class="cell-actions">
-                            <a href="{% url 'edit_agency' agency.id %}" class="action-btn edit" title="Modifier">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                            </a>
-                            <form action="{% url 'delete_agency' agency.id %}" method="POST" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="action-btn del" title="Supprimer">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-        </table>
     </div>
 
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <h2>Ajouter une agence</h2>
-            <form method="POST" action="{% url 'add_agency' %}">
-                {% csrf_token %}
-                <input type="text" name="name" placeholder="Nom de l'agence" required>
-                <input type="text" name="city" placeholder="Ville" required>
-                <input type="text" name="address" placeholder="Adresse" required>
-                <input type="text" name="phone" placeholder="Téléphone" required>
-                <button type="submit" class="btn-add">Enregistrer</button>
-            </form>
+    <!-- Cards -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-4">
+
+            <div class="card dashboard-card">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <h4>Douala</h4>
+
+                        <p>Products : 850</p>
+
+                        <p>Employees : 12</p>
+
+                    </div>
+
+                    <div class="icon bg-primary-soft">
+
+                        <i class="bi bi-building"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
+
+        <div class="col-lg-4">
+
+            <div class="card dashboard-card">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <h4>Yaoundé</h4>
+
+                        <p>Products : 620</p>
+
+                        <p>Employees : 9</p>
+
+                    </div>
+
+                    <div class="icon bg-success-soft">
+
+                        <i class="bi bi-building"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <div class="card dashboard-card">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <h4>Bafoussam</h4>
+
+                        <p>Products : 340</p>
+
+                        <p>Employees : 7</p>
+
+                    </div>
+
+                    <div class="icon bg-warning-soft">
+
+                        <i class="bi bi-building"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <script src="{% static 'script.js' %}"></script>
-</body>
-</html>
+    <!-- Agency Table -->
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row mb-3">
+
+                <div class="col-md-4">
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Search agency...">
+
+                </div>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Agency</th>
+
+                        <th>Manager</th>
+
+                        <th>City</th>
+
+                        <th>Employees</th>
+
+                        <th>Products</th>
+
+                        <th>Status</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr>
+
+                        <td>1</td>
+
+                        <td>Douala</td>
+
+                        <td>Jean Pierre</td>
+
+                        <td>Douala</td>
+
+                        <td>12</td>
+
+                        <td>850</td>
+
+                        <td>
+
+                            <span class="badge bg-success">
+
+                                Active
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-sm btn-primary">
+
+                                View
+
+                            </button>
+
+                            <button class="btn btn-sm btn-warning">
+
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-sm btn-danger">
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>2</td>
+
+                        <td>Yaoundé</td>
+
+                        <td>Eric Ndzi</td>
+
+                        <td>Yaoundé</td>
+
+                        <td>9</td>
+
+                        <td>620</td>
+
+                        <td>
+
+                            <span class="badge bg-success">
+
+                                Active
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-sm btn-primary">
+
+                                View
+
+                            </button>
+
+                            <button class="btn btn-sm btn-warning">
+
+                                Edit
+
+                            </button>
+
+                            <button class="btn btn-sm btn-danger">
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% include 'agencies/agency_form.html' %}
+
+{% endblock %}

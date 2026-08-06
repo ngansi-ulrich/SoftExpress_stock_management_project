@@ -1,0 +1,247 @@
+<!-- Agency Modal -->
+<div class="modal fade" id="agencyModal" tabindex="-1" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <!-- Header -->
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    <i class="bi bi-building me-2"></i>
+
+                    Add New Agency
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <!-- Form -->
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <!-- Agency Name -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                Agency Name
+
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="SoftExpress Douala"
+                                required>
+
+                        </div>
+
+                        <!-- City -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                City
+
+                            </label>
+
+                            <select class="form-select">
+
+                                <option>Douala</option>
+                                <option>Yaoundé</option>
+                                <option>Bafoussam</option>
+                                <option>Garoua</option>
+                                <option>Bamenda</option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- Manager -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                Agency Manager
+
+                            </label>
+
+                            <select class="form-select">
+
+                                <option>Select Manager</option>
+
+                                <option>Jean Pierre</option>
+
+                                <option>Eric Ndzi</option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- Phone -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                Phone Number
+
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="+237 6XXXXXXXX">
+
+                        </div>
+
+                        <!-- Email -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                Email
+
+                            </label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                placeholder="agency@softexpress.cm">
+
+                        </div>
+
+                        <!-- Status -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                Status
+
+                            </label>
+
+                            <select class="form-select">
+
+                                <option value="active">
+
+                                    Active
+
+                                </option>
+
+                                <option value="inactive">
+
+                                    Inactive
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- Address -->
+
+                        <div class="col-12 mb-3">
+
+                            <label class="form-label">
+
+                                Address
+
+                            </label>
+
+                            <textarea
+                                class="form-control"
+                                rows="3"
+                                placeholder="Street, Quarter, City"></textarea>
+
+                        </div>
+
+                        <!-- Description -->
+
+                        <div class="col-12 mb-3">
+
+                            <label class="form-label">
+
+                                Description
+
+                            </label>
+
+                            <textarea
+                                class="form-control"
+                                rows="4"
+                                placeholder="Agency description"></textarea>
+
+                        </div>
+
+                        <!-- Logo -->
+
+                        <div class="col-12">
+
+                            <label class="form-label">
+
+                                Agency Logo
+
+                            </label>
+
+                            <input
+                                type="file"
+                                class="form-control">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        Cancel
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        <i class="bi bi-check-circle me-2"></i>
+
+                        Save Agency
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

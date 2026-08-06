@@ -8,28 +8,71 @@
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="{% static 'style.css' %}"/>
   <link rel="stylesheet" href="{% static 'employees.css' %}"/>
+  <link rel="stylesheet" href="{% static 'dashboard.css' %}"/>
 </head>
 <body>
-
-  <!-- ── Toolbar ── -->
-  <div class="toolbar">
+<div class="toolbar">
     <div class="lang-pill">
       <button class="lang-btn active" id="btnFR" onclick="setLang('fr')">FR</button>
       <div class="lang-sep"></div>
       <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
     </div>
-    <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">
+      <!-- Moon — visible in dark mode -->
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
       </svg>
+      <!-- Sun — visible in light mode -->
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1"  x2="12" y2="3"/>  <line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/>  <line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        <line x1="12" y1="1"  x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22"  y1="4.22"  x2="5.64"  y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1"  y1="12" x2="3"  y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+        <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
       </svg>
     </button>
+</div>
+  
+
+  <!-- ── Toolbar ── -->
+  <div class="toolbar">
+    
+      <!-- ═════════ SIDEBAR (Kept same as Dashboard) ═════════ -->
+    
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="{% static 'logo.png' %}" alt="Logo"/>
+        <div class="sidebar-logo-text">
+          <strong>StockManager</strong>
+          <span>Multi-Agences</span>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Principal</div>
+        <a href="{% url 'dashboard' %}" class="nav-item">Tableau de bord</a>
+        <a href="{% url 'agency_list' %}" class="nav-item">Agences</a>
+        <a href="#" class="nav-item">Produits</a>
+        <a href="#" class="nav-item">Clients</a>
+        <a href="{% url 'employee_list' %}" class="nav-item active">Employés</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Gestion</div>
+        <a href="#" class="nav-item">Ventes</a>
+        <a href="#" class="nav-item">Transferts</a>
+        <a href="#" class="nav-item">Rapports</a>
+        <a href="#" class="nav-item">Paramètres</a>
+        <a href="{% url 'Logout' %}" class="logout-btn">
+        <svg width="8" height="10" viewBox="0 0 15 15" fill="none" ></svg>
+        <span data-i18n="logoutbtn">Logout</span>
+        </a>
+      </div>
+    </aside>
   </div>
 
   <!-- ── Animated background ── -->
@@ -39,18 +82,15 @@
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 
+<header class="topbars">
+  <h2>Tableau d'agences</h2>
+  <div>👤 {{ request.user.username }}</div>
+</header>
+
   <!-- ── Main container ── -->
   <div class="page-wrap">
-
     <!-- Page header -->
     <div class="page-header">
-      <div class="header-left">
-        <img src="{% static 'logo.png' %}" alt="Logo" class="header-logo"/>
-        <div>
-          <div class="header-title" data-i18n="pageTitle">Employés</div>
-          <div class="header-sub" data-i18n="pageSub">Gestion Multi-Agences</div>
-        </div>
-      </div>
       <a href="{% url 'add_employee' %}" class="btn-add">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         <span data-i18n="btnAdd">Ajouter</span>
@@ -183,16 +223,13 @@
         </svg>
         <p data-i18n="emptyState">Aucun employé trouvé</p>
       </div>
-    </div>
-
-    <!-- Pagination -->
-    <div class="pagination" id="pagination"></div>
-
+    </div><div class="pagination" id="pagination"></div>
   </div><!-- /.page-wrap -->
 
   <!-- Delete confirm toast -->
   <div class="toast" id="toast"></div>
 
   <script src="{% static 'employees.js' %}"></script>
+  <script src="{% static 'app.js' %}"></script>
 </body>
 </html>

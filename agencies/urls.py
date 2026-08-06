@@ -2,8 +2,15 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Match /agencies/
     path('', views.agency_list, name='agency_list'),
-    path('add/', views.add_agency, name='add_agency'),
-    path('edit/<int:id>/', views.edit_agency, name='edit_agency'),
-    path('delete/<int:id>/', views.delete_agency, name='delete_agency'),
+    
+    # Match /agencies/add/
+    path('add/', views.agency_create, name='agency_create'),
+    
+    # Match /agencies/<id>/edit/
+    path('<int:pk>/edit/', views.agency_update, name='agency_update'),
+    
+    # Match /agencies/<id>/delete/
+    path('<int:pk>/delete/', views.agency_delete, name='agency_delete'),
 ]

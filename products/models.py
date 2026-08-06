@@ -1,5 +1,5 @@
 from django.db import models
-
+from agencies.models import Agency
 class Category(models.Model):
 
     name = models.CharField(max_length=100)
@@ -11,6 +11,14 @@ class Category(models.Model):
     
 class Product(models.Model):
 
+    #agency = models.ForeignKey(Agency, on_delete=models.CASCADE, related_name='products')
+    agency = models.ForeignKey(
+    Agency,
+    on_delete=models.CASCADE,
+    null=True,
+    blank=True
+)
+    
     product_code = models.CharField(
         max_length=50,
         unique=True,

@@ -1,0 +1,223 @@
+<nav class="navbar navbar-expand-lg bg-white shadow-sm px-4 py-3 sticky-top">
+
+    <!-- Mobile Sidebar Toggle -->
+    <button class="btn btn-outline-primary d-lg-none me-3" id="sidebarToggle">
+        <i class="bi bi-list fs-4"></i>
+    </button>
+
+    <!-- Search -->
+    <form class="d-none d-md-flex flex-grow-1 me-4">
+        <div class="input-group">
+
+            <span class="input-group-text bg-light border-0">
+                <i class="bi bi-search"></i>
+            </span>
+
+            <input
+                type="search"
+                class="form-control border-0 bg-light"
+                placeholder="Search products, employees, clients..."
+            >
+
+        </div>
+    </form>
+
+    <ul class="navbar-nav ms-auto align-items-center">
+
+        <!-- Language -->
+        <li class="nav-item dropdown me-3">
+
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+
+                <i class="bi bi-translate"></i>
+
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+
+                <li>
+                    <a class="dropdown-item" href="#">
+                        🇬🇧 English
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="#">
+                        🇫🇷 Français
+                    </a>
+                </li>
+
+            </ul>
+
+        </li>
+
+        <!-- Dark Mode -->
+
+        <li class="nav-item me-3">
+
+            <button class="btn btn-light rounded-circle" id="themeToggle">
+
+                <i class="bi bi-moon-stars-fill"></i>
+
+            </button>
+
+        </li>
+
+        <!-- Notifications -->
+
+        <li class="nav-item dropdown me-3">
+
+            <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown">
+
+                <i class="bi bi-bell fs-5"></i>
+
+                <span
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+                    4
+
+                </span>
+
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-end p-0 shadow" style="width:330px;">
+
+                <div class="p-3 border-bottom">
+
+                    <h6 class="mb-0">
+
+                        Notifications
+
+                    </h6>
+
+                </div>
+
+                <a href="#" class="dropdown-item py-3">
+
+                    <i class="bi bi-exclamation-circle text-danger me-2"></i>
+
+                    Laptop HP stock is low.
+
+                </a>
+
+                <a href="#" class="dropdown-item py-3">
+
+                    <i class="bi bi-check-circle text-success me-2"></i>
+
+                    Transfer completed successfully.
+
+                </a>
+
+                <a href="#" class="dropdown-item py-3">
+
+                    <i class="bi bi-cart-check text-primary me-2"></i>
+
+                    New sale recorded.
+
+                </a>
+
+                <a href="#" class="dropdown-item py-3">
+
+                    <i class="bi bi-person-plus text-warning me-2"></i>
+
+                    New employee added.
+
+                </a>
+
+                <div class="text-center border-top">
+
+                    <a href="#" class="btn btn-link w-100">
+
+                        View All
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </li>
+
+        <!-- User -->
+
+        <li class="nav-item dropdown">
+
+            <a
+                class="nav-link dropdown-toggle d-flex align-items-center"
+                href="#"
+                data-bs-toggle="dropdown">
+
+                <img
+                    src="{% static 'img/avatar.png' %}"
+                    class="rounded-circle me-2"
+                    width="42"
+                    height="42"
+                >
+
+                <div class="d-none d-md-block">
+
+                    <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+
+                    <br>
+
+                    <small class="text-muted">
+
+                        CEO
+
+                    </small>
+
+                </div>
+
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow">
+
+                <li>
+
+                    <a class="dropdown-item" href="#">
+
+                        <i class="bi bi-person-circle me-2"></i>
+
+                        My Profile
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a class="dropdown-item" href="#">
+
+                        <i class="bi bi-gear me-2"></i>
+
+                        Settings
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <hr class="dropdown-divider">
+
+                </li>
+
+                <li>
+
+                    <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+
+                        <i class="bi bi-box-arrow-right me-2"></i>
+
+                        Logout
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </li>
+
+    </ul>
+
+</nav>

@@ -1,0 +1,525 @@
+/* ==========================================
+   SOFTEXPRESS ERP DASHBOARD
+   Version: 1.0
+==========================================*/
+
+:root{
+
+    --primary:#2563EB;
+    --primary-dark:#1D4ED8;
+
+    --success:#16A34A;
+    --warning:#F59E0B;
+    --danger:#DC2626;
+
+    --sidebar:#111827;
+    --sidebar-hover:#1F2937;
+
+    --background:#F5F7FB;
+
+    --card:#FFFFFF;
+
+    --text:#1F2937;
+    --muted:#6B7280;
+
+    --border:#E5E7EB;
+
+    --radius:15px;
+
+    --transition:.30s;
+}
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    background:var(--background);
+
+    color:var(--text);
+
+    overflow-x:hidden;
+}
+
+/*====================================
+Wrapper
+====================================*/
+
+.wrapper{
+
+    display:flex;
+
+    min-height:100vh;
+}
+
+/*====================================
+Sidebar
+====================================*/
+
+.sidebar{
+
+    width:270px;
+
+    background:var(--sidebar);
+
+    color:white;
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    height:100vh;
+
+    overflow-y:auto;
+
+    transition:.3s;
+
+    z-index:999;
+}
+
+.sidebar::-webkit-scrollbar{
+
+    width:5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+
+    background:#374151;
+}
+
+/* Logo */
+
+.logo{
+
+    height:80px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:15px;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo img{
+
+    width:45px;
+}
+
+.logo h4{
+
+    margin:0;
+
+    font-weight:700;
+}
+
+/* Menu */
+
+.menu{
+
+    list-style:none;
+
+    padding:20px 0;
+
+    margin:0;
+}
+
+.menu-title{
+
+    color:#9CA3AF;
+
+    font-size:12px;
+
+    text-transform:uppercase;
+
+    margin:20px 25px 10px;
+}
+
+.menu li a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    color:#D1D5DB;
+
+    padding:14px 25px;
+
+    text-decoration:none;
+
+    transition:.25s;
+}
+
+.menu li a:hover{
+
+    background:var(--sidebar-hover);
+
+    color:white;
+
+    padding-left:32px;
+}
+
+.menu li a.active{
+
+    background:var(--primary);
+
+    color:white;
+
+    border-left:5px solid white;
+}
+
+.menu i{
+
+    font-size:18px;
+}
+
+/*====================================
+Main
+====================================*/
+
+.main{
+
+    margin-left:270px;
+
+    width:calc(100% - 270px);
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:100vh;
+}
+
+/*====================================
+Navbar
+====================================*/
+
+.navbar{
+
+    border-bottom:1px solid var(--border);
+}
+
+.navbar .form-control{
+
+    border-radius:30px;
+}
+
+.navbar img{
+
+    object-fit:cover;
+}
+
+/*====================================
+Content
+====================================*/
+
+.content{
+
+    padding:30px;
+}
+
+/*====================================
+Cards
+====================================*/
+
+.card{
+
+    border:none;
+
+    border-radius:var(--radius);
+
+    box-shadow:0 5px 20px rgba(0,0,0,.05);
+
+    transition:.3s;
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+
+.dashboard-card{
+
+    padding:20px;
+}
+
+.dashboard-card .icon{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:28px;
+
+    color:white;
+}
+
+.bg-primary-soft{
+
+    background:var(--primary);
+}
+
+.bg-success-soft{
+
+    background:var(--success);
+}
+
+.bg-warning-soft{
+
+    background:var(--warning);
+}
+
+.bg-danger-soft{
+
+    background:var(--danger);
+}
+
+.dashboard-card h2{
+
+    font-size:32px;
+
+    font-weight:700;
+}
+
+.dashboard-card p{
+
+    color:var(--muted);
+
+    margin-bottom:5px;
+}
+
+/*====================================
+Tables
+====================================*/
+
+.table{
+
+    vertical-align:middle;
+}
+
+.table thead{
+
+    background:#F9FAFB;
+}
+
+.table th{
+
+    border:none;
+
+    color:#374151;
+
+    font-weight:600;
+}
+
+.table td{
+
+    border-top:1px solid #F3F4F6;
+}
+
+.table tbody tr{
+
+    transition:.25s;
+}
+
+.table tbody tr:hover{
+
+    background:#F8FAFC;
+}
+
+/*====================================
+Buttons
+====================================*/
+
+.btn{
+
+    border-radius:10px;
+
+    transition:.25s;
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+}
+
+/*====================================
+Badges
+====================================*/
+
+.badge{
+
+    padding:8px 12px;
+
+    border-radius:30px;
+}
+
+/*====================================
+Charts
+====================================*/
+
+.chart-card{
+
+    padding:20px;
+
+    min-height:400px;
+}
+
+/*====================================
+Footer
+====================================*/
+
+.footer{
+
+    margin-top:auto;
+}
+
+/*====================================
+Animations
+====================================*/
+
+.fade-up{
+
+    animation:fadeUp .5s ease;
+}
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(30px);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+    }
+
+}
+
+/*====================================
+Dark Mode
+====================================*/
+
+.dark{
+
+    --background:#0F172A;
+
+    --card:#1E293B;
+
+    --text:#F3F4F6;
+
+    --muted:#CBD5E1;
+
+    --border:#334155;
+}
+
+.dark body{
+
+    background:var(--background);
+}
+
+.dark .card{
+
+    background:var(--card);
+
+    color:var(--text);
+}
+
+.dark .navbar{
+
+    background:#1E293B !important;
+}
+
+.dark .footer{
+
+    background:#1E293B !important;
+
+    color:white;
+}
+
+.dark .table{
+
+    color:white;
+}
+
+/*====================================
+Scrollbar
+====================================*/
+
+::-webkit-scrollbar{
+
+    width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#9CA3AF;
+
+    border-radius:20px;
+}
+/* Toast Notification */
+
+.toast-box{
+
+    position:fixed;
+
+    top:30px;
+
+    right:30px;
+
+    background:#2563EB;
+
+    color:white;
+
+    padding:15px 25px;
+
+    border-radius:12px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+
+    opacity:0;
+
+    transform:translateX(120px);
+
+    transition:.4s;
+
+    z-index:9999;
+
+}
+
+.toast-box.show{
+
+    opacity:1;
+
+    transform:translateX(0);
+
+}
+
+
+/* Mobile Sidebar */
+
+.sidebar.show{
+
+    left:0;
+
+}

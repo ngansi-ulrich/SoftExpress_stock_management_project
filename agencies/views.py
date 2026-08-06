@@ -1,35 +1,41 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from .models import Agency
+from .forms import AgencyForm
 
+@login_required
 def agency_list(request):
-    agencies = Agency.objects.all()
-    return render(request, 'agencies/agencies.html', {'agencies': agencies})
+    agencies = Agency.objects.annotate(employee_count=Count('employee')).all()
+    active_agencies_count = agencies.filter(is_active=True).count()
+    
+    # Simple aggregations
+    context = {
+        'agencies': agencies,
+        'active_agencies_count': active_agencies_count,
+        'total_employees': sum(a.employee_count for a in agencies),
+    }
+    return render(request, 'agency_list.html', context)
 
-def add_agency(request):
-    if request.method == 'POST':
-        # Use your Django Form class here for better validation
-        Agency.objects.create(
-            name=request.POST.get('name'),
-            city=request.POST.get('city'),
-            address=request.POST.get('address'),
-            phone=request.POST.get('phone')
-        )
+@login_required
+def agency_create(request):
+    form = AgencyForm(request.POST or None)
+    if form.is_valid():
+        form.save()
         return redirect('agency_list')
-    return redirect('agency_list')
+    return render(request, 'agency_form.html', {'form': form})
 
-def edit_agency(request, id):
-    agency = get_object_or_404(Agency, id=id)
-    if request.method == 'POST':
-        agency.name = request.POST.get('name')
-        agency.city = request.POST.get('city')
-        agency.address = request.POST.get('address')
-        agency.phone = request.POST.get('phone')
-        agency.save()
+@login_required
+def agency_update(request, pk):
+    agency = get_object_or_404(Agency, pk=pk)
+    form = AgencyForm(request.POST or None, instance=agency)
+    if form.is_valid():
+        form.save()
         return redirect('agency_list')
-    return render(request, 'edit_agency.html', {'agency': agency})
+    return render(request, 'agency_form.html', {'form': form})
 
-def delete_agency(request, id):
-    agency = get_object_or_404(Agency, id=id)
-    if request.method == 'POST':
-        agency.delete()
+@login_required
+def agency_delete(request, pk):
+    agency = get_object_or_404(Agency, pk=pk)
+    agency.delete()
     return redirect('agency_list')

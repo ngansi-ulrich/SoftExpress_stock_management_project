@@ -51,7 +51,7 @@ def add_employee(request):
 
     return render(
         request,
-        "employees/employees.html",
+        "employees/add_employee.html",
         {
             "form": form
         }
@@ -87,7 +87,7 @@ def employee_edit(request, id):
 
     return render(
         request,
-        'employees/employees.html',
+        'employees/edit_employee.html',
         {
             'form': form
         }
