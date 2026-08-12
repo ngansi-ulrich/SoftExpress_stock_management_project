@@ -221,7 +221,10 @@ Content
 
 .content{
 
-    padding:30px;
+    padding: 20px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /*====================================
@@ -375,9 +378,8 @@ Charts
 
 .chart-card{
 
-    padding:20px;
-
-    min-height:400px;
+    padding: 15px;
+    min-height: 320px;
 }
 
 /*====================================
@@ -521,5 +523,251 @@ Scrollbar
 .sidebar.show{
 
     left:0;
+}
 
+/* =========================================
+   SOFTEXPRESS DASHBOARD - RESPONSIVE FIX
+========================================= */
+
+.dashboard-content {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* KPI cards */
+
+.dashboard-card {
+    height: 100%;
+    min-width: 0;
+}
+
+/* Prevent text from forcing cards wider */
+
+.dashboard-card h2,
+.dashboard-card p,
+.dashboard-card span {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+
+/* Charts */
+
+.chart-card {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.chart-card canvas {
+    max-width: 100% !important;
+}
+
+
+/* =========================================
+   LAPTOPS
+========================================= */
+
+@media (max-width: 1200px) {
+
+    .content {
+        padding: 15px;
+    }
+
+    .dashboard-card {
+        padding: 15px;
+    }
+
+    .dashboard-card h2 {
+        font-size: 1.6rem;
+    }
+
+    .dashboard-card .icon {
+        width: 50px;
+        height: 50px;
+        font-size: 22px;
+    }
+
+    .chart-card {
+        min-height: 300px;
+        padding: 12px;
+    }
+
+}
+
+
+/* =========================================
+   SMALL LAPTOPS
+========================================= */
+
+@media (max-width: 992px) {
+
+    .sidebar {
+        width: 220px;
+    }
+
+    .main {
+        margin-left: 220px;
+    }
+
+}
+
+
+/* =========================================
+   TABLETS
+========================================= */
+
+@media (max-width: 768px) {
+
+    .sidebar {
+        width: 0;
+        overflow: hidden;
+    }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .content {
+        padding: 15px;
+    }
+
+    .dashboard-card {
+        margin-bottom: 15px;
+    }
+
+}
+
+
+/* =========================================
+   PHONES
+========================================= */
+
+@media (max-width: 576px) {
+
+    .content {
+        padding: 10px;
+    }
+
+    .dashboard-card h2 {
+        font-size: 1.5rem;
+    }
+
+}
+/* ==========================================
+   DASHBOARD SCROLL AREA
+========================================== */
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.wrapper {
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
+
+.main {
+    height: 100vh;
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+.content {
+    flex: 1;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 20px;
+}
+
+ /*Smooth scrollbar */
+
+.content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* ==========================================
+   MAIN CONTENT SCROLLBAR
+========================================== */
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.wrapper {
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
+
+.main {
+    height: 100vh;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* THIS is the scrollbar */
+.content {
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 20px;
+}
+
+/* Chrome / Firefox / Edge scrollbar */
+
+.content {
+    scrollbar-width: thin;
+    scrollbar-color: #555 transparent;
+}
+
+.content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+    background: #777;
 }

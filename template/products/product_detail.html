@@ -1,0 +1,524 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Product Details
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid">
+
+
+<!-- Header -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="fw-bold">
+
+            <i class="bi bi-box-seam me-2"></i>
+
+            HP EliteBook 840 G8
+
+        </h2>
+
+        <p class="text-muted">
+
+            Product information and inventory tracking
+
+        </p>
+
+    </div>
+
+
+    <div>
+
+        <button class="btn btn-warning">
+
+            <i class="bi bi-pencil me-2"></i>
+
+            Edit
+
+        </button>
+
+
+        <button class="btn btn-primary">
+
+            <i class="bi bi-arrow-left-right me-2"></i>
+
+            Transfer
+
+        </button>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- Product Overview -->
+
+
+<div class="row g-4 mb-4">
+
+
+<div class="col-lg-4">
+
+
+<div class="card p-4 text-center">
+
+
+<img
+src="{% static 'img/laptop.png' %}"
+class="img-fluid rounded mb-3"
+style="height:220px;object-fit:contain;">
+
+
+
+<h4>
+
+HP EliteBook 840 G8
+
+</h4>
+
+
+<p class="text-muted">
+
+Laptop
+
+</p>
+
+
+
+<span class="badge bg-success">
+
+Available
+
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="col-lg-8">
+
+
+<div class="card p-4">
+
+
+<h5 class="fw-bold mb-3">
+
+Product Information
+
+</h5>
+
+
+<div class="row">
+
+
+<div class="col-md-6">
+
+<p>
+
+<strong>Code:</strong>
+
+LAP001
+
+</p>
+
+
+<p>
+
+<strong>Brand:</strong>
+
+HP
+
+</p>
+
+
+<p>
+
+<strong>Model:</strong>
+
+840 G8
+
+</p>
+
+
+<p>
+
+<strong>Serial:</strong>
+
+HP8G123456
+
+</p>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<p>
+
+<strong>Category:</strong>
+
+Laptop
+
+</p>
+
+
+<p>
+
+<strong>Warranty:</strong>
+
+1 Year
+
+</p>
+
+
+<p>
+
+<strong>Supplier:</strong>
+
+Tech Supplier Ltd
+
+</p>
+
+
+<p>
+
+<strong>Added:</strong>
+
+05/08/2026
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<!-- Stock Per Agency -->
+
+<div class="card mb-4">
+
+
+<div class="card-header">
+
+
+<h5 class="fw-bold">
+
+Stock Distribution
+
+</h5>
+
+
+</div>
+
+
+<div class="table-responsive">
+
+
+<table class="table">
+
+
+<thead>
+
+<tr>
+
+<th>Agency</th>
+
+<th>Location</th>
+
+<th>Quantity</th>
+
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+
+<tr>
+
+<td>
+
+SoftExpress Douala
+
+</td>
+
+
+<td>
+
+Douala
+
+</td>
+
+
+<td>
+
+25
+
+</td>
+
+
+<td>
+
+<span class="badge bg-success">
+
+Good
+
+</span>
+
+</td>
+
+
+</tr>
+
+
+
+<tr>
+
+<td>
+
+SoftExpress Yaoundé
+
+</td>
+
+
+<td>
+
+Yaoundé
+
+</td>
+
+
+<td>
+
+12
+
+</td>
+
+
+<td>
+
+<span class="badge bg-success">
+
+Good
+
+</span>
+
+</td>
+
+
+</tr>
+
+
+
+
+<tr>
+
+<td>
+
+SoftExpress Bafoussam
+
+</td>
+
+
+<td>
+
+Bafoussam
+
+</td>
+
+
+<td>
+
+3
+
+</td>
+
+
+<td>
+
+<span class="badge bg-warning">
+
+Low
+
+</span>
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- Product Activity -->
+
+
+<div class="row g-4">
+
+
+<div class="col-lg-6">
+
+
+<div class="card">
+
+
+<div class="card-header">
+
+<h5>
+
+Recent Sales
+
+</h5>
+
+</div>
+
+
+<ul class="list-group list-group-flush">
+
+
+<li class="list-group-item">
+
+Invoice #INV001
+
+<span class="float-end">
+
+350,000 FCFA
+
+</span>
+
+</li>
+
+
+
+<li class="list-group-item">
+
+Invoice #INV005
+
+<span class="float-end">
+
+520,000 FCFA
+
+</span>
+
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="col-lg-6">
+
+
+<div class="card">
+
+
+<div class="card-header">
+
+<h5>
+
+Stock Movement
+
+</h5>
+
+</div>
+
+
+<ul class="list-group list-group-flush">
+
+
+<li class="list-group-item">
+
+Transfer from Yaoundé
+
+<span class="float-end text-success">
+
++10
+
+</span>
+
+</li>
+
+
+<li class="list-group-item">
+
+Sale completed
+
+<span class="float-end text-danger">
+
+-1
+
+</span>
+
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+{% endblock %}

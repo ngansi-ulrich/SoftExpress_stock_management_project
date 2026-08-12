@@ -1,0 +1,554 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Inventory Dashboard
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container-fluid">
+
+
+<!-- Header -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+
+<div>
+
+<h2 class="fw-bold">
+
+<i class="bi bi-boxes me-2"></i>
+
+Inventory Dashboard
+
+</h2>
+
+
+<p class="text-muted">
+
+Monitor stock levels across all SoftExpress agencies.
+
+</p>
+
+
+</div>
+
+
+
+<div>
+
+
+<button class="btn btn-warning me-2">
+
+<i class="bi bi-sliders me-2"></i>
+
+Adjust Stock
+
+</button>
+
+
+
+<button class="btn btn-primary">
+
+<i class="bi bi-arrow-left-right me-2"></i>
+
+Transfer Stock
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- Statistics Cards -->
+
+
+<div class="row g-4 mb-4">
+
+
+<div class="col-xl-3 col-md-6">
+
+
+<div class="card dashboard-card">
+
+
+<p>Total Products</p>
+
+
+<h2>
+
+2547
+
+</h2>
+
+
+<span class="text-primary">
+
+Across all agencies
+
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="col-xl-3 col-md-6">
+
+
+<div class="card dashboard-card">
+
+
+<p>Total Quantity</p>
+
+
+<h2>
+
+8650
+
+</h2>
+
+
+<span class="text-success">
+
+Units Available
+
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="col-xl-3 col-md-6">
+
+
+<div class="card dashboard-card">
+
+
+<p>Inventory Value</p>
+
+
+<h2>
+
+215M FCFA
+
+</h2>
+
+
+<span class="text-success">
+
+Current Value
+
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="col-xl-3 col-md-6">
+
+
+<div class="card dashboard-card">
+
+
+<p>Low Stock Items</p>
+
+
+<h2>
+
+17
+
+</h2>
+
+
+<span class="text-danger">
+
+Need Restocking
+
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<!-- Agency Stock Overview -->
+
+
+<div class="row g-4 mb-4">
+
+
+<div class="col-lg-8">
+
+
+<div class="card">
+
+
+<div class="card-header">
+
+
+<h5 class="fw-bold">
+
+Stock By Agency
+
+</h5>
+
+
+</div>
+
+
+
+<div class="card-body">
+
+
+<canvas id="stockAgencyChart"></canvas>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- Alerts -->
+
+
+<div class="col-lg-4">
+
+
+<div class="card">
+
+
+<div class="card-header">
+
+
+<h5 class="fw-bold text-danger">
+
+Stock Alerts
+
+</h5>
+
+
+</div>
+
+
+
+
+<ul class="list-group list-group-flush">
+
+
+
+<li class="list-group-item">
+
+
+HP EliteBook 840
+
+
+<span class="badge bg-danger float-end">
+
+2 left
+
+</span>
+
+
+</li>
+
+
+
+<li class="list-group-item">
+
+
+Dell Monitor
+
+
+<span class="badge bg-warning float-end">
+
+5 left
+
+</span>
+
+
+</li>
+
+
+
+
+<li class="list-group-item">
+
+
+Canon Printer
+
+
+<span class="badge bg-danger float-end">
+
+1 left
+
+</span>
+
+
+</li>
+
+
+
+</ul>
+
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<!-- Inventory Table -->
+
+
+<div class="card">
+
+
+<div class="card-header">
+
+
+<h5 class="fw-bold">
+
+Current Stock
+
+</h5>
+
+
+</div>
+
+
+
+<div class="table-responsive">
+
+
+<table class="table table-hover">
+
+
+<thead>
+
+
+<tr>
+
+<th>Product</th>
+
+<th>Category</th>
+
+<th>Douala</th>
+
+<th>Yaoundé</th>
+
+<th>Bafoussam</th>
+
+<th>Total</th>
+
+<th>Status</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody>
+
+
+<tr>
+
+
+<td>
+
+HP EliteBook 840
+
+</td>
+
+
+<td>
+
+Laptop
+
+</td>
+
+
+
+<td>
+
+25
+
+</td>
+
+
+<td>
+
+12
+
+</td>
+
+
+<td>
+
+3
+
+</td>
+
+
+<td>
+
+40
+
+</td>
+
+
+<td>
+
+
+<span class="badge bg-success">
+
+Available
+
+</span>
+
+
+</td>
+
+
+</tr>
+
+
+
+
+
+<tr>
+
+
+<td>
+
+Dell Monitor
+
+</td>
+
+
+<td>
+
+Accessories
+
+</td>
+
+
+
+<td>
+
+5
+
+</td>
+
+
+<td>
+
+2
+
+</td>
+
+
+<td>
+
+1
+
+</td>
+
+
+<td>
+
+8
+
+</td>
+
+
+<td>
+
+
+<span class="badge bg-warning">
+
+Low
+
+</span>
+
+
+</td>
+
+
+</tr>
+
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+{% endblock %}

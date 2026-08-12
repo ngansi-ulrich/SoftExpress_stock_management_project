@@ -1,0 +1,472 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+
+Stock Transfers
+
+{% endblock %}
+
+
+
+
+{% block content %}
+
+
+<div class="container-fluid">
+
+
+
+<!-- Header -->
+
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+
+<div>
+
+
+<h2 class="fw-bold">
+
+
+<i class="bi bi-arrow-left-right me-2"></i>
+
+
+Stock Transfers
+
+
+</h2>
+
+
+
+<p class="text-muted">
+
+
+Manage movement of products between agencies.
+
+
+</p>
+
+
+</div>
+
+
+
+
+<button
+
+class="btn btn-primary"
+
+
+data-bs-toggle="modal"
+
+data-bs-target="#transferModal">
+
+
+<i class="bi bi-plus-circle me-2"></i>
+
+
+New Transfer
+
+
+</button>
+
+
+</div>
+
+
+
+
+
+<!-- Statistics -->
+
+
+<div class="row g-4 mb-4">
+
+
+
+<div class="col-md-3">
+
+
+<div class="card dashboard-card">
+
+
+<p>
+
+Pending Transfers
+
+</p>
+
+
+<h2>
+
+8
+
+</h2>
+
+
+<span class="text-warning">
+
+Waiting approval
+
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="col-md-3">
+
+
+<div class="card dashboard-card">
+
+
+<p>
+
+Completed
+
+</p>
+
+
+<h2>
+
+125
+
+</h2>
+
+
+<span class="text-success">
+
+This month
+
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="col-md-3">
+
+
+<div class="card dashboard-card">
+
+
+<p>
+
+Products Moved
+
+</p>
+
+
+<h2>
+
+540
+
+</h2>
+
+
+<span>
+
+Units transferred
+
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="col-md-3">
+
+
+<div class="card dashboard-card">
+
+
+<p>
+
+Agencies Connected
+
+</p>
+
+
+<h2>
+
+3
+
+</h2>
+
+
+<span>
+
+Douala / Yaoundé / Bafoussam
+
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<!-- Transfer Table -->
+
+
+<div class="card">
+
+
+<div class="card-header">
+
+
+<h5 class="fw-bold">
+
+Recent Transfers
+
+</h5>
+
+
+</div>
+
+
+
+<div class="table-responsive">
+
+
+<table class="table table-hover align-middle">
+
+
+<thead>
+
+
+<tr>
+
+
+<th>ID</th>
+
+<th>Product</th>
+
+<th>From</th>
+
+<th>To</th>
+
+<th>Quantity</th>
+
+<th>Requested By</th>
+
+<th>Status</th>
+
+<th>Action</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+<tbody>
+
+
+
+<tr>
+
+
+<td>
+
+TRF001
+
+</td>
+
+
+<td>
+
+HP EliteBook 840
+
+</td>
+
+
+<td>
+
+Douala
+
+</td>
+
+
+<td>
+
+Yaoundé
+
+</td>
+
+
+<td>
+
+15
+
+</td>
+
+
+<td>
+
+Store Keeper
+
+</td>
+
+
+<td>
+
+
+<span class="badge bg-warning">
+
+Pending
+
+</span>
+
+
+</td>
+
+
+<td>
+
+
+<button class="btn btn-sm btn-primary">
+
+View
+
+</button>
+
+
+</td>
+
+
+</tr>
+
+
+
+
+
+<tr>
+
+
+<td>
+
+TRF002
+
+</td>
+
+
+<td>
+
+Dell Monitor
+
+</td>
+
+
+<td>
+
+Yaoundé
+
+</td>
+
+
+<td>
+
+Bafoussam
+
+</td>
+
+
+<td>
+
+10
+
+</td>
+
+
+<td>
+
+Manager
+
+</td>
+
+
+<td>
+
+
+<span class="badge bg-success">
+
+Completed
+
+</span>
+
+
+</td>
+
+
+<td>
+
+
+<button class="btn btn-sm btn-primary">
+
+View
+
+</button>
+
+
+</td>
+
+
+</tr>
+
+
+
+</tbody>
+
+
+
+</table>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+{% include 'transfers/transfer_form.html' %}
+
+
+{% endblock %}

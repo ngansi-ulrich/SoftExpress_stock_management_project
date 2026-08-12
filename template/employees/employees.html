@@ -1,235 +1,376 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="fr" data-theme="dark">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Employés — Gestion de Stock</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="{% static 'style.css' %}"/>
-  <link rel="stylesheet" href="{% static 'employees.css' %}"/>
-  <link rel="stylesheet" href="{% static 'dashboard.css' %}"/>
-</head>
-<body>
-<div class="toolbar">
-    <div class="lang-pill">
-      <button class="lang-btn active" id="btnFR" onclick="setLang('fr')">FR</button>
-      <div class="lang-sep"></div>
-      <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
-    </div>
-    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">
-      <!-- Moon — visible in dark mode -->
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-      </svg>
-      <!-- Sun — visible in light mode -->
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1"  x2="12" y2="3"/>
-        <line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22"  y1="4.22"  x2="5.64"  y2="5.64"/>
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1"  y1="12" x2="3"  y2="12"/>
-        <line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
-        <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
-      </svg>
-    </button>
-</div>
-  
 
-  <!-- ── Toolbar ── -->
-  <div class="toolbar">
-    
-      <!-- ═════════ SIDEBAR (Kept same as Dashboard) ═════════ -->
-    
-    <aside class="sidebar">
-      <div class="sidebar-logo">
-        <img src="{% static 'logo.png' %}" alt="Logo"/>
-        <div class="sidebar-logo-text">
-          <strong>StockManager</strong>
-          <span>Multi-Agences</span>
+{% block title %}Employees | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+        <div>
+            <h3 class="mb-1">Employees</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Employees</li>
+                </ol>
+            </nav>
         </div>
-      </div>
 
-      <div class="nav-section">
-        <div class="nav-section-label">Principal</div>
-        <a href="{% url 'dashboard' %}" class="nav-item">Tableau de bord</a>
-        <a href="{% url 'agency_list' %}" class="nav-item">Agences</a>
-        <a href="#" class="nav-item">Produits</a>
-        <a href="#" class="nav-item">Clients</a>
-        <a href="{% url 'employee_list' %}" class="nav-item active">Employés</a>
-      </div>
+        <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addEmployeeModal">
 
-      <div class="nav-section">
-        <div class="nav-section-label">Gestion</div>
-        <a href="#" class="nav-item">Ventes</a>
-        <a href="#" class="nav-item">Transferts</a>
-        <a href="#" class="nav-item">Rapports</a>
-        <a href="#" class="nav-item">Paramètres</a>
-        <a href="{% url 'Logout' %}" class="logout-btn">
-        <svg width="8" height="10" viewBox="0 0 15 15" fill="none" ></svg>
-        <span data-i18n="logoutbtn">Logout</span>
-        </a>
-      </div>
-    </aside>
-  </div>
+            <i class="bi bi-person-plus me-1"></i>
+            Add Employee
 
-  <!-- ── Animated background ── -->
-  <div class="bg"></div>
-  <div class="grid-lines"></div>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
+        </button>
 
-<header class="topbars">
-  <h2>Tableau d'agences</h2>
-  <div>👤 {{ request.user.username }}</div>
-</header>
-
-  <!-- ── Main container ── -->
-  <div class="page-wrap">
-    <!-- Page header -->
-    <div class="page-header">
-      <a href="{% url 'add_employee' %}" class="btn-add">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span data-i18n="btnAdd">Ajouter</span>
-      </a>
     </div>
 
-    <!-- Stats bar -->
-    <div class="stats-bar">
-      <div class="stat-card">
-        <div class="stat-value" id="statTotal">{{ employees.count }}</div>
-        <div class="stat-label" data-i18n="statTotal">Total employés</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="statDouala">{{ douala_count }}</div>
-        <div class="stat-label">Douala</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="statYaounde">{{ yaounde_count }}</div>
-        <div class="stat-label">Yaoundé</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="statBafoussam">{{ bafoussam_count }}</div>
-        <div class="stat-label">Bafoussam</div>
-      </div>
+    {% include 'components/messages.html' %}
+
+    <!-- Stat Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-6 col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-primary-subtle text-primary">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h4 class="mb-0">{{ total_employees }}</h4>
+                    <small class="text-muted">Total Employees</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-success-subtle text-success">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+                    <h4 class="mb-0">{{ active_employees }}</h4>
+                    <small class="text-muted">Active</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-danger-subtle text-danger">
+                        <i class="bi bi-person-x"></i>
+                    </div>
+                    <h4 class="mb-0">{{ inactive_employees }}</h4>
+                    <small class="text-muted">Inactive</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-warning-subtle text-warning">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <h4 class="mb-0">{{ total_agencies }}</h4>
+                    <small class="text-muted">Agencies</small>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Filters -->
-    <div class="filters">
-      <div class="search-wrap">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input type="text" id="searchInput" data-i18n-ph="searchPh" placeholder="Rechercher un employé…" oninput="filterTable()"/>
-      </div>
-      <select class="filter-select" id="agencyFilter" onchange="filterTable()">
-        <option value="" data-i18n="filterAll">Toutes les agences</option>
-        <option value="Douala">Douala</option>
-        <option value="Yaoundé">Yaoundé</option>
-        <option value="Bafoussam">Bafoussam</option>
-      </select>
-      <select class="filter-select" id="roleFilter" onchange="filterTable()">
-        <option value="" data-i18n="filterRole">Tous les rôles</option>
-        <option value="Admin">Admin</option>
-        <option value="Manager">Manager</option>
-        <option value="Agent">Agent</option>
-        <option value="Caissier">Caissier</option>
-      </select>
+    <!-- Employees Table -->
+    <div class="card table-card">
+
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+            <h6 class="mb-0">Employee List</h6>
+
+            <form class="d-flex gap-2" method="get">
+
+                <select name="agency" class="form-select form-select-sm">
+                    <option value="">All Agencies</option>
+                    {% for agency in agencies %}
+                    <option value="{{ agency.id }}" {% if request.GET.agency == agency.id|stringformat:"s" %}selected{% endif %}>
+                        {{ agency.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All Status</option>
+                    <option value="active" {% if request.GET.status == "active" %}selected{% endif %}>Active</option>
+                    <option value="inactive" {% if request.GET.status == "inactive" %}selected{% endif %}>Inactive</option>
+                </select>
+
+                <input
+                    type="search"
+                    name="q"
+                    class="form-control form-control-sm"
+                    placeholder="Search employee..."
+                    value="{{ request.GET.q }}">
+
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-filter"></i>
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Position</th>
+                            <th>Agency</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Hire Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for employee in employees %}
+                        <tr>
+
+                            <td>
+                                <div class="d-flex align-items-center">
+
+                                    <img
+                                        src="{% if employee.photo %}{{ employee.photo.url }}{% else %}{% static 'img/avatar.png' %}{% endif %}"
+                                        class="rounded-circle me-2"
+                                        width="36"
+                                        height="36"
+                                        alt="{{ employee.get_full_name }}">
+
+                                    <div>
+                                        <div class="fw-semibold">{{ employee.get_full_name }}</div>
+                                        <small class="text-muted">{{ employee.employee_id }}</small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>{{ employee.position }}</td>
+
+                            <td>{{ employee.agency.name }}</td>
+
+                            <td>{{ employee.phone }}</td>
+
+                            <td>{{ employee.email }}</td>
+
+                            <td>{{ employee.hire_date|date:"d M Y" }}</td>
+
+                            <td>
+                                {% if employee.is_active %}
+                                <span class="badge bg-success-subtle text-success">Active</span>
+                                {% else %}
+                                <span class="badge bg-danger-subtle text-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-end">
+
+                                <div class="dropdown">
+
+                                    <button
+                                        class="btn btn-sm btn-icon"
+                                        data-bs-toggle="dropdown"
+                                        type="button"
+                                        aria-expanded="false">
+
+                                        <i class="bi bi-three-dots-vertical"></i>
+
+                                    </button>
+
+                                    <ul class="dropdown-menu dropdown-menu-end shadow">
+
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'employee_detail' employee.id %}">
+                                                <i class="bi bi-eye me-2"></i>
+                                                View
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'employee_edit' employee.id %}">
+                                                <i class="bi bi-pencil me-2"></i>
+                                                Edit
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+
+                                        <li>
+                                            <a
+                                                class="dropdown-item text-danger"
+                                                href="{% url 'employee_delete' employee.id %}">
+
+                                                <i class="bi bi-trash me-2"></i>
+                                                Delete
+
+                                            </a>
+                                        </li>
+
+                                    </ul>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                No employees found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        {% if is_paginated %}
+        <div class="card-footer">
+
+            <nav aria-label="Employee pagination">
+
+                <ul class="pagination pagination-sm justify-content-end mb-0">
+
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+
+            </nav>
+
+        </div>
+        {% endif %}
+
     </div>
 
-    <!-- Table card -->
-    <div class="table-card">
-      <table id="employeeTable">
-        <thead>
-          <tr>
-            <th onclick="sortTable('id')"       class="sortable" data-i18n="colId">ID <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable('name')"     class="sortable" data-i18n="colName">Nom <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable('role')"     class="sortable" data-i18n="colRole">Rôle <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable('agency')"   class="sortable" data-i18n="colAgency">Agence <span class="sort-icon">↕</span></th>
-            <th data-i18n="colActions">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for employee in employees %}
-            <tr>
-                <td>{{ employee.employee_id }}</td>
-                <td>
-                    <div class="cell-name">
-                        <div class="avatar">
-                            {{ employee.first_name|slice:":1" }}{{ employee.last_name|slice:":1" }}
+</div>
+
+
+<!-- Add Employee Modal -->
+<div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <form method="post" action="{% url 'add_employee' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Employee</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" class="form-control" required>
                         </div>
-                        <span class="name-text">
-                            {{ employee.first_name }} {{ employee.last_name }}
-                        </span>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Position</label>
+                            <input type="text" name="position" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Agency</label>
+                            <select name="agency" class="form-select" required>
+                                <option value="">Select agency</option>
+                                {% for agency in agencies %}
+                                <option value="{{ agency.id }}">{{ agency.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" name="phone" class="form-control">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Hire Date</label>
+                            <input type="date" name="hire_date" class="form-control">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Photo</label>
+                            <input type="file" name="photo" class="form-control" accept="image/*">
+                        </div>
+
                     </div>
-                </td>
-                <td>
-                    <span class="badge
-                        {% if employee.role == 'ADMIN' %}
-                            badge-admin
-                        {% elif employee.role == 'MANAGER' %}
-                            badge-manager
-                        {% elif employee.role == 'AGENT' %}
-                            badge-agent
-                        {% else %}
-                            badge-agent
-                        {% endif %}
-                        ">
-                        <span class="badge-dot"></span>
-                        {{ employee.role }}
-                    </span>
-                </td>
-                <td>
-                    <span class="agency-pill">
-                        📍 {{ employee.agency.name }}
-                    </span>
-                </td>
-                <td>
-                    <div class="cell-actions">
-                        <a href="{% url 'employee_edit' employee.id %}"
-                          class="action-btn edit">
-                            <svg viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg>
-                        </a>
-                        <a href="{% url 'employee_delete' employee.id %}"
-                          class="action-btn del">
-                            <svg viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"></path>
-                                <path d="M10 11v6M14 11v6"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
 
-      <!-- Empty state -->
-      <div class="empty-state" id="emptyState" style="display:none">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
-        </svg>
-        <p data-i18n="emptyState">Aucun employé trouvé</p>
-      </div>
-    </div><div class="pagination" id="pagination"></div>
-  </div><!-- /.page-wrap -->
+                </div>
 
-  <!-- Delete confirm toast -->
-  <div class="toast" id="toast"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Employee</button>
+                </div>
 
-  <script src="{% static 'employees.js' %}"></script>
-  <script src="{% static 'app.js' %}"></script>
-</body>
-</html>
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
