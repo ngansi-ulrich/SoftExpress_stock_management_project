@@ -1,0 +1,96 @@
+{% load static %}
+
+<div class="row">
+
+    <!-- Agency Name -->
+
+    <div class="col-md-6 mb-3">
+
+        <label class="form-label" for="{{ form.name.id_for_label }}">
+            Agency Name
+        </label>
+
+        {{ form.name }}
+        {{ form.name.errors }}
+
+    </div>
+
+    <!-- City -->
+
+    <div class="col-md-6 mb-3">
+
+        <label class="form-label" for="{{ form.city.id_for_label }}">
+            City
+        </label>
+
+        {{ form.city }}
+        {{ form.city.errors }}
+
+    </div>
+
+    <!-- Manager -->
+
+    <div class="col-md-6 mb-3">
+
+        <label class="form-label" for="{{ form.manager.id_for_label }}">
+            Agency Manager
+        </label>
+
+        {{ form.manager }}
+        {{ form.manager.errors }}
+
+    </div>
+
+    <!-- Phone -->
+
+    <div class="col-md-6 mb-3">
+
+        <label class="form-label" for="{{ form.phone.id_for_label }}">
+            Phone Number
+        </label>
+
+        {{ form.phone }}
+        {{ form.phone.errors }}
+
+    </div>
+
+    <!-- Email -->
+
+    <div class="col-md-6 mb-3">
+
+        <label class="form-label" for="{{ form.email.id_for_label }}">
+            Email
+        </label>
+
+        {{ form.email }}
+        {{ form.email.errors }}
+
+    </div>
+
+    <!-- Status -->
+
+    <div class="col-md-6 mb-3">
+
+        <label class="form-label" for="{{ form.is_active.id_for_label }}">
+            Status
+        </label>
+
+        {{ form.is_active }}
+        {{ form.is_active.errors }}
+
+    </div>
+
+    <!-- Address -->
+
+    <div class="col-12 mb-3">
+
+        <label class="form-label" for="{{ form.address.id_for_label }}">
+            Address
+        </label>
+
+        {{ form.address }}
+        {{ form.address.errors }}
+
+    </div>
+
+</div>

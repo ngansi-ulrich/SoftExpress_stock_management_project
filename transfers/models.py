@@ -53,5 +53,12 @@ class Transfer(models.Model):
         auto_now_add=True
     )
 
+    def save(self, *args, **kwargs):
+        if not self.transfer_number:
+            last = Transfer.objects.order_by('id').last()
+            next_id = (last.id + 1) if last else 1
+            self.transfer_number = f"TRF{next_id:04d}"
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.transfer_number

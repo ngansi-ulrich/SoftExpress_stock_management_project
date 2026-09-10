@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}New Sale | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h3 class="mb-1">New Sale</h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'sale_list' %}">Sales</a></li>
+                <li class="breadcrumb-item active" aria-current="page">New</li>
+            </ol>
+        </nav>
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="card mb-4">
+
+            <div class="card-header">
+                <h6 class="mb-0">Sale Details</h6>
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ sale_form.customer.id_for_label }}">Customer</label>
+                        {{ sale_form.customer }}
+                        {{ sale_form.customer.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ sale_form.agency.id_for_label }}">Agency</label>
+                        {{ sale_form.agency }}
+                        {{ sale_form.agency.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ sale_form.payment_method.id_for_label }}">Payment Method</label>
+                        {{ sale_form.payment_method }}
+                        {{ sale_form.payment_method.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ sale_form.payment_status.id_for_label }}">Payment Status</label>
+                        {{ sale_form.payment_status }}
+                        {{ sale_form.payment_status.errors }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card mb-4">
+
+            <div class="card-header">
+                <h6 class="mb-0">Items</h6>
+            </div>
+
+            <div class="card-body">
+
+                {{ formset.management_form }}
+                {{ formset.non_form_errors }}
+
+                <div class="table-responsive">
+
+                    <table class="table align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                {% if formset.can_delete %}
+                                <th>Remove</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for item_form in formset %}
+                            <tr>
+
+                                <td>
+                                    {{ item_form.id }}
+                                    {{ item_form.product }}
+                                    {{ item_form.product.errors }}
+                                </td>
+
+                                <td>
+                                    {{ item_form.quantity }}
+                                    {{ item_form.quantity.errors }}
+                                </td>
+
+                                <td>
+                                    {{ item_form.unit_price }}
+                                    {{ item_form.unit_price.errors }}
+                                </td>
+
+                                {% if formset.can_delete %}
+                                <td class="text-center">
+                                    {{ item_form.DELETE }}
+                                </td>
+                                {% endif %}
+
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p class="text-muted small mb-0">
+                    Leave rows blank to skip them. Total amount is calculated automatically from
+                    the items you fill in.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <a href="{% url 'sale_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-2"></i>
+                Complete Sale
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -41,23 +41,13 @@ Monitor stock levels across all SoftExpress agencies.
 <div>
 
 
-<button class="btn btn-warning me-2">
+<a href="{% url 'stock_adjustment' %}" class="btn btn-warning me-2">
 
 <i class="bi bi-sliders me-2"></i>
 
 Adjust Stock
 
-</button>
-
-
-
-<button class="btn btn-primary">
-
-<i class="bi bi-arrow-left-right me-2"></i>
-
-Transfer Stock
-
-</button>
+</a>
 
 
 </div>
@@ -65,9 +55,7 @@ Transfer Stock
 
 </div>
 
-
-
-
+{% include 'components/messages.html' %}
 
 <!-- Statistics Cards -->
 
@@ -84,11 +72,7 @@ Transfer Stock
 <p>Total Products</p>
 
 
-<h2>
-
-2547
-
-</h2>
+<h2>{{ total_products }}</h2>
 
 
 <span class="text-primary">
@@ -116,11 +100,7 @@ Across all agencies
 <p>Total Quantity</p>
 
 
-<h2>
-
-8650
-
-</h2>
+<h2>{{ total_quantity }}</h2>
 
 
 <span class="text-success">
@@ -148,11 +128,7 @@ Units Available
 <p>Inventory Value</p>
 
 
-<h2>
-
-215M FCFA
-
-</h2>
+<h2>{{ inventory_value }} FCFA</h2>
 
 
 <span class="text-success">
@@ -180,16 +156,12 @@ Current Value
 <p>Low Stock Items</p>
 
 
-<h2>
-
-17
-
-</h2>
+<h2>{{ low_stock_count }}</h2>
 
 
 <span class="text-danger">
 
-Need Restocking
+<a href="{% url 'stock_alerts' %}" class="text-danger">Need Restocking</a>
 
 </span>
 
@@ -203,11 +175,6 @@ Need Restocking
 
 </div>
 
-
-
-
-
-<!-- Agency Stock Overview -->
 
 
 <div class="row g-4 mb-4">
@@ -248,12 +215,6 @@ Stock By Agency
 </div>
 
 
-
-
-
-<!-- Alerts -->
-
-
 <div class="col-lg-4">
 
 
@@ -278,63 +239,25 @@ Stock Alerts
 <ul class="list-group list-group-flush">
 
 
-
+{% for item in low_stock_items %}
 <li class="list-group-item">
 
+{{ item.product.name }} ({{ item.agency.name }})
 
-HP EliteBook 840
-
-
-<span class="badge bg-danger float-end">
-
-2 left
-
+<span class="badge {% if item.quantity == 0 %}bg-danger{% else %}bg-warning{% endif %} float-end">
+{{ item.quantity }} left
 </span>
 
-
 </li>
-
-
-
-<li class="list-group-item">
-
-
-Dell Monitor
-
-
-<span class="badge bg-warning float-end">
-
-5 left
-
-</span>
-
-
+{% empty %}
+<li class="list-group-item text-muted text-center">
+Nothing low on stock right now.
 </li>
-
-
-
-
-<li class="list-group-item">
-
-
-Canon Printer
-
-
-<span class="badge bg-danger float-end">
-
-1 left
-
-</span>
-
-
-</li>
-
-
+{% endfor %}
 
 </ul>
 
 
-
 </div>
 
 
@@ -343,13 +266,6 @@ Canon Printer
 
 
 </div>
-
-
-
-
-
-
-<!-- Inventory Table -->
 
 
 <div class="card">
@@ -384,13 +300,11 @@ Current Stock
 
 <th>Category</th>
 
-<th>Douala</th>
+<th>Agency</th>
 
-<th>Yaoundé</th>
+<th>Quantity</th>
 
-<th>Bafoussam</th>
-
-<th>Total</th>
+<th>Minimum</th>
 
 <th>Status</th>
 
@@ -405,133 +319,33 @@ Current Stock
 <tbody>
 
 
+{% for item in inventories %}
 <tr>
 
+<td>{{ item.product.name }}</td>
+
+<td>{{ item.product.category.name }}</td>
+
+<td>{{ item.agency.name }}</td>
+
+<td>{{ item.quantity }}</td>
+
+<td>{{ item.minimum_stock }}</td>
 
 <td>
-
-HP EliteBook 840
-
+{% if item.is_low_stock %}
+<span class="badge bg-warning">Low</span>
+{% else %}
+<span class="badge bg-success">Available</span>
+{% endif %}
 </td>
-
-
-<td>
-
-Laptop
-
-</td>
-
-
-
-<td>
-
-25
-
-</td>
-
-
-<td>
-
-12
-
-</td>
-
-
-<td>
-
-3
-
-</td>
-
-
-<td>
-
-40
-
-</td>
-
-
-<td>
-
-
-<span class="badge bg-success">
-
-Available
-
-</span>
-
-
-</td>
-
 
 </tr>
-
-
-
-
-
+{% empty %}
 <tr>
-
-
-<td>
-
-Dell Monitor
-
-</td>
-
-
-<td>
-
-Accessories
-
-</td>
-
-
-
-<td>
-
-5
-
-</td>
-
-
-<td>
-
-2
-
-</td>
-
-
-<td>
-
-1
-
-</td>
-
-
-<td>
-
-8
-
-</td>
-
-
-<td>
-
-
-<span class="badge bg-warning">
-
-Low
-
-</span>
-
-
-</td>
-
-
+<td colspan="6" class="text-center text-muted py-4">No inventory records yet.</td>
 </tr>
-
-
+{% endfor %}
 
 </tbody>
 

@@ -1,5 +1,10 @@
-<!-- Agency Modal -->
-<div class="modal fade" id="agencyModal" tabindex="-1" aria-hidden="true">
+<!-- Agency Modal (Add only) -->
+<div
+    class="modal fade {% if show_agency_modal %}show{% endif %}"
+    id="agencyModal"
+    tabindex="-1"
+    aria-hidden="true"
+    {% if show_agency_modal %}style="display: block;"{% endif %}>
 
     <div class="modal-dialog modal-lg modal-dialog-centered">
 
@@ -27,189 +32,13 @@
 
             <!-- Form -->
 
-            <form method="POST">
+            <form method="POST" action="{% url 'agency_create' %}">
 
                 {% csrf_token %}
 
                 <div class="modal-body">
 
-                    <div class="row">
-
-                        <!-- Agency Name -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                Agency Name
-
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="SoftExpress Douala"
-                                required>
-
-                        </div>
-
-                        <!-- City -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                City
-
-                            </label>
-
-                            <select class="form-select">
-
-                                <option>Douala</option>
-                                <option>Yaoundé</option>
-                                <option>Bafoussam</option>
-                                <option>Garoua</option>
-                                <option>Bamenda</option>
-
-                            </select>
-
-                        </div>
-
-                        <!-- Manager -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                Agency Manager
-
-                            </label>
-
-                            <select class="form-select">
-
-                                <option>Select Manager</option>
-
-                                <option>Jean Pierre</option>
-
-                                <option>Eric Ndzi</option>
-
-                            </select>
-
-                        </div>
-
-                        <!-- Phone -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                Phone Number
-
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="+237 6XXXXXXXX">
-
-                        </div>
-
-                        <!-- Email -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                Email
-
-                            </label>
-
-                            <input
-                                type="email"
-                                class="form-control"
-                                placeholder="agency@softexpress.cm">
-
-                        </div>
-
-                        <!-- Status -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                Status
-
-                            </label>
-
-                            <select class="form-select">
-
-                                <option value="active">
-
-                                    Active
-
-                                </option>
-
-                                <option value="inactive">
-
-                                    Inactive
-
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                        <!-- Address -->
-
-                        <div class="col-12 mb-3">
-
-                            <label class="form-label">
-
-                                Address
-
-                            </label>
-
-                            <textarea
-                                class="form-control"
-                                rows="3"
-                                placeholder="Street, Quarter, City"></textarea>
-
-                        </div>
-
-                        <!-- Description -->
-
-                        <div class="col-12 mb-3">
-
-                            <label class="form-label">
-
-                                Description
-
-                            </label>
-
-                            <textarea
-                                class="form-control"
-                                rows="4"
-                                placeholder="Agency description"></textarea>
-
-                        </div>
-
-                        <!-- Logo -->
-
-                        <div class="col-12">
-
-                            <label class="form-label">
-
-                                Agency Logo
-
-                            </label>
-
-                            <input
-                                type="file"
-                                class="form-control">
-
-                        </div>
-
-                    </div>
+                    {% include 'agencies/_agency_fields.html' %}
 
                 </div>
 
@@ -245,3 +74,7 @@
     </div>
 
 </div>
+
+{% if show_agency_modal %}
+<div class="modal-backdrop fade show"></div>
+{% endif %}

@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Transfer History{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                <i class="bi bi-clock-history me-2"></i>
+                Transfer History
+            </h2>
+
+            <p class="text-muted">Full log of every transfer request.</p>
+
+        </div>
+
+        <a href="{% url 'transfer_list' %}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Transfers
+        </a>
+
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <div class="card mb-4">
+
+        <div class="card-body">
+
+            <form method="get" class="row g-3">
+
+                <div class="col-md-3">
+
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="" {% if not selected_status %}selected{% endif %}>All Statuses</option>
+                        <option value="PENDING" {% if selected_status == "PENDING" %}selected{% endif %}>Pending</option>
+                        <option value="APPROVED" {% if selected_status == "APPROVED" %}selected{% endif %}>Approved</option>
+                        <option value="REJECTED" {% if selected_status == "REJECTED" %}selected{% endif %}>Rejected</option>
+                    </select>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Quantity</th>
+                        <th>Requested By</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for transfer in transfers %}
+                    <tr>
+
+                        <td>{{ transfer.transfer_number }}</td>
+
+                        <td>{{ transfer.product.name }}</td>
+
+                        <td>{{ transfer.source_agency.name }}</td>
+
+                        <td>{{ transfer.destination_agency.name }}</td>
+
+                        <td>{{ transfer.quantity }}</td>
+
+                        <td>{{ transfer.requested_by.first_name }} {{ transfer.requested_by.last_name }}</td>
+
+                        <td>{{ transfer.created_at|date:"d M Y, H:i" }}</td>
+
+                        <td>
+                            {% if transfer.status == 'PENDING' %}
+                            <span class="badge bg-warning">Pending</span>
+                            {% elif transfer.status == 'APPROVED' %}
+                            <span class="badge bg-success">Approved</span>
+                            {% else %}
+                            <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'transfer_detail' transfer.pk %}" class="btn btn-sm btn-primary">View</a>
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-4">No transfers match this filter.</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

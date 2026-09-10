@@ -1,0 +1,25 @@
+/* Invoice print layout — hides app chrome, keeps the invoice sheet
+   printing cleanly on white regardless of dark mode being active. */
+
+@media print {
+    .sidebar, .navbar, .footer, .no-print {
+        display: none !important;
+    }
+
+    .main {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    .invoice-sheet {
+        box-shadow: none !important;
+        border: none !important;
+        background: #ffffff !important;
+        color: #1F2937 !important;
+    }
+}
+
+.invoice-sheet {
+    max-width: 800px;
+    margin: 0 auto;
+}

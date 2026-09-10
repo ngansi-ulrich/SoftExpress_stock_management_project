@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Clients | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+        <div>
+            <h3 class="mb-1">Customers</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Customers</li>
+                </ol>
+            </nav>
+        </div>
+
+        <a href="{% url 'add_customer' %}" class="btn btn-primary">
+            <i class="bi bi-person-vcard me-1"></i>
+            Add Customer
+        </a>
+
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6 col-md-3">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total Customers</p>
+                        <h2>{{ total_customers }}</h2>
+                    </div>
+                    <div class="icon bg-primary-soft">
+                        <i class="bi bi-person-vcard"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>With Email</p>
+                        <h2>{{ with_email_count }}</h2>
+                    </div>
+                    <div class="icon bg-success-soft">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-header">
+            <h6 class="mb-0">Customer List</h6>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for customer in customers %}
+                    <tr>
+
+                        <td>{{ customer.customer_id }}</td>
+
+                        <td class="fw-semibold">{{ customer.first_name }} {{ customer.last_name }}</td>
+
+                        <td>{{ customer.phone }}</td>
+
+                        <td>{{ customer.email|default:"—" }}</td>
+
+                        <td>{{ customer.address|default:"—"|truncatechars:40 }}</td>
+
+                        <td class="text-end">
+
+                            <a href="{% url 'customer_edit' customer.id %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="{% url 'customer_delete' customer.id %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No customers yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -2,6 +2,7 @@ from django.db import models
 from agencies.models import Agency
 from products.models import Product
 
+
 class Inventory(models.Model):
 
     agency = models.ForeignKey(
@@ -25,6 +26,10 @@ class Inventory(models.Model):
     last_updated = models.DateTimeField(
         auto_now=True
     )
+
+    class Meta:
+        unique_together = ('agency', 'product')
+
     @property
     def is_low_stock(self):
         return self.quantity <= self.minimum_stock

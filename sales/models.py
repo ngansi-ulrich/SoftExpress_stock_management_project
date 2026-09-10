@@ -89,8 +89,8 @@ class Sale(models.Model):
 
     def __str__(self):
         return self.sale_number
-    
-    
+
+
 class SaleItem(models.Model):
 
     sale = models.ForeignKey(
@@ -139,3 +139,40 @@ class SaleItem(models.Model):
 
     def __str__(self):
         return f"{self.product.name}"
+
+
+class Invoice(models.Model):
+    """
+    A financial/document record generated from a completed Sale.
+    Deliberately minimal: no InvoiceItem model, no duplicated
+    payment_status/payment_method/customer/agency fields — those all
+    live on Sale already and are accessed via invoice.sale.* to avoid
+    two sources of truth. See invoice_list/invoice_detail views.
+    """
+
+    invoice_number = models.CharField(
+        max_length=20,
+        unique=True,
+        blank=True
+    )
+
+    sale = models.OneToOneField(
+        Sale,
+        on_delete=models.CASCADE,
+        related_name='invoice'
+    )
+
+    issued_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-issued_at']
+
+    def save(self, *args, **kwargs):
+        if not self.invoice_number:
+            last = Invoice.objects.order_by('id').last()
+            next_id = (last.id + 1) if last else 1
+            self.invoice_number = f"INV-{next_id:06d}"
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.invoice_number

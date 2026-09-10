@@ -30,28 +30,28 @@
         </li>
 
         <li>
-            <a href="#">
+            <a href="{% url 'product_list' %}">
                 <i class="bi bi-box-seam"></i>
                 Products
             </a>
         </li>
 
         <li>
-            <a href="#">
+            <a href="{% url 'category_list' %}">
                 <i class="bi bi-diagram-3"></i>
                 Categories
             </a>
         </li>
 
         <li>
-            <a href="#">
+            <a href="{% url 'inventory_list' %}">
                 <i class="bi bi-archive"></i>
                 Inventory
             </a>
         </li>
 
         <li>
-            <a href="#">
+            <a href="{% url 'transfer_list' %}">
                 <i class="bi bi-arrow-left-right"></i>
                 Transfers
             </a>
@@ -69,14 +69,14 @@
         </li>
 
         <li>
-            <a href="#">
+            <a href="{% url 'customer_list' %}">
                 <i class="bi bi-person-vcard"></i>
-                Clients
+                Customer
             </a>
         </li>
 
         <li>
-            <a href="#">
+            <a href="{% url 'supplier_list' %}">
                 <i class="bi bi-truck"></i>
                 Suppliers
             </a>
@@ -87,14 +87,14 @@
         </li>
 
         <li>
-            <a href="#">
+            <a href="{% url 'sale_list' %}">
                 <i class="bi bi-cart-check"></i>
                 Sales
             </a>
         </li>
 
         <li>
-            <a href="#">
+            <a href="{% url 'invoice_list' %}">
                 <i class="bi bi-receipt"></i>
                 Invoices
             </a>
@@ -105,25 +105,25 @@
         </li>
 
         <li>
-            <a href="#">
+            <a href="{% url 'reports_dashboard' %}">
                 <i class="bi bi-bar-chart-line"></i>
                 Reports
             </a>
         </li>
 
-        <li>
+        <!-- <li>
             <a href="#">
                 <i class="bi bi-graph-up-arrow"></i>
                 Analytics
             </a>
-        </li>
+        </li> -->
 
         <li class="menu-title">
             ADMINISTRATION
         </li>
 
         <li>
-            <a href="#">
+            <a href="{% url 'user_list' %}">
                 <i class="bi bi-person-gear"></i>
                 Users
             </a>

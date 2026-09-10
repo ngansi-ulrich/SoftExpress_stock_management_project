@@ -47,6 +47,9 @@ INSTALLED_APPS = [
     'transfers',
     'logs',
     'employees',
+    'reports',
+    'setting_app',
+    'suppliers',
 ]
 
 MIDDLEWARE = [
@@ -90,6 +93,7 @@ DATABASES = {
         'PASSWORD': 'softadmin',
         'HOST': 'localhost',
         'PORT': '5432',
+        'DISABLE_SERVER_SIDE_CURSORS': True,
     }
     }
 

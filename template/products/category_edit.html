@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Category{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">
+            <i class="bi bi-diagram-3 me-2"></i>
+            Edit Category
+        </h2>
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {% include 'products/_category_fields.html' %}
+
+                <div class="d-flex justify-content-end gap-2 mt-3">
+
+                    <a href="{% url 'category_list' %}" class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-2"></i>
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

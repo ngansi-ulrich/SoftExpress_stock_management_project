@@ -1,377 +1,42 @@
-<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+<div
+    class="modal fade {% if show_product_modal %}show{% endif %}"
+    id="productModal"
+    tabindex="-1"
+    aria-hidden="true"
+    {% if show_product_modal %}style="display: block;"{% endif %}>
 
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
 
         <div class="modal-content">
 
-            <!-- Header -->
-
             <div class="modal-header">
 
                 <h5 class="modal-title">
-
                     <i class="bi bi-box-seam me-2"></i>
-
                     Add New Product
-
                 </h5>
 
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal">
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 
             </div>
 
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST" action="{% url 'product_create' %}">
 
                 {% csrf_token %}
 
                 <div class="modal-body">
-
-                    <div class="row">
-
-                        <!-- Product Code -->
-
-                        <div class="col-md-4 mb-3">
-
-                            <label class="form-label">
-
-                                Product Code
-
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                value="LAP001"
-                                readonly>
-
-                        </div>
-
-                        <!-- Barcode -->
-
-                        <div class="col-md-4 mb-3">
-
-                            <label class="form-label">
-
-                                Barcode
-
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="Generated automatically">
-
-                        </div>
-
-                        <!-- QR Code -->
-
-                        <div class="col-md-4 mb-3">
-
-                            <label class="form-label">
-
-                                QR Code
-
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="Generated automatically">
-
-                        </div>
-
-                        <!-- Product Name -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                Product Name
-
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="HP EliteBook 840 G8"
-                                required>
-
-                        </div>
-
-                        <!-- Category -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                Category
-
-                            </label>
-
-                            <select class="form-select">
-
-                                <option>Laptop</option>
-                                <option>Desktop</option>
-                                <option>Printer</option>
-                                <option>Accessory</option>
-                                <option>Networking</option>
-
-                            </select>
-
-                        </div>
-
-                        <!-- Brand -->
-
-                        <div class="col-md-4 mb-3">
-
-                            <label class="form-label">
-
-                                Brand
-
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="HP">
-
-                        </div>
-
-                        <!-- Model -->
-
-                        <div class="col-md-4 mb-3">
-
-                            <label class="form-label">
-
-                                Model
-
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="840 G8">
-
-                        </div>
-
-                        <!-- Serial Number -->
-
-                        <div class="col-md-4 mb-3">
-
-                            <label class="form-label">
-
-                                Serial Number
-
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control">
-
-                        </div>
-
-                        <!-- Purchase Price -->
-
-                        <div class="col-md-3 mb-3">
-
-                            <label class="form-label">
-
-                                Purchase Price
-
-                            </label>
-
-                            <input
-                                type="number"
-                                class="form-control">
-
-                        </div>
-
-                        <!-- Selling Price -->
-
-                        <div class="col-md-3 mb-3">
-
-                            <label class="form-label">
-
-                                Selling Price
-
-                            </label>
-
-                            <input
-                                type="number"
-                                class="form-control">
-
-                        </div>
-
-                        <!-- Quantity -->
-
-                        <div class="col-md-3 mb-3">
-
-                            <label class="form-label">
-
-                                Quantity
-
-                            </label>
-
-                            <input
-                                type="number"
-                                class="form-control">
-
-                        </div>
-
-                        <!-- Minimum Stock -->
-
-                        <div class="col-md-3 mb-3">
-
-                            <label class="form-label">
-
-                                Minimum Stock
-
-                            </label>
-
-                            <input
-                                type="number"
-                                class="form-control">
-
-                        </div>
-
-                        <!-- Supplier -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                Supplier
-
-                            </label>
-
-                            <select class="form-select">
-
-                                <option>Select Supplier</option>
-
-                            </select>
-
-                        </div>
-
-                        <!-- Agency -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                Agency
-
-                            </label>
-
-                            <select class="form-select">
-
-                                <option>Douala</option>
-                                <option>Yaoundé</option>
-                                <option>Bafoussam</option>
-
-                            </select>
-
-                        </div>
-
-                        <!-- Warranty -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                Warranty
-
-                            </label>
-
-                            <select class="form-select">
-
-                                <option>None</option>
-                                <option>6 Months</option>
-                                <option>1 Year</option>
-                                <option>2 Years</option>
-
-                            </select>
-
-                        </div>
-
-                        <!-- Status -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
-
-                                Status
-
-                            </label>
-
-                            <select class="form-select">
-
-                                <option>Available</option>
-                                <option>Reserved</option>
-                                <option>Out of Stock</option>
-
-                            </select>
-
-                        </div>
-
-                        <!-- Product Image -->
-
-                        <div class="col-md-12 mb-3">
-
-                            <label class="form-label">
-
-                                Product Image
-
-                            </label>
-
-                            <input
-                                type="file"
-                                class="form-control">
-
-                        </div>
-
-                        <!-- Description -->
-
-                        <div class="col-md-12">
-
-                            <label class="form-label">
-
-                                Description
-
-                            </label>
-
-                            <textarea
-                                rows="4"
-                                class="form-control"></textarea>
-
-                        </div>
-
-                    </div>
-
+                    {% include 'products/_product_fields.html' %}
                 </div>
 
                 <div class="modal-footer">
 
-                    <button
-                        class="btn btn-secondary"
-                        type="button"
-                        data-bs-dismiss="modal">
-
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
                         Cancel
-
                     </button>
 
-                    <button
-                        class="btn btn-primary"
-                        type="submit">
-
+                    <button class="btn btn-primary" type="submit">
                         <i class="bi bi-check-circle me-2"></i>
-
                         Save Product
-
                     </button>
 
                 </div>
@@ -383,3 +48,7 @@
     </div>
 
 </div>
+
+{% if show_product_modal %}
+<div class="modal-backdrop fade show"></div>
+{% endif %}

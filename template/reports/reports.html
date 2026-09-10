@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reports & Analytics | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Reports &amp; Analytics</h2>
+        <p class="text-muted mb-0">Analyze sales, inventory, agencies and business performance.</p>
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <!-- Report navigation -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="{% url 'reports_dashboard' %}" class="btn btn-primary btn-sm">Dashboard</a>
+        <a href="{% url 'sales_report' %}" class="btn btn-outline-secondary btn-sm">Sales</a>
+        <a href="{% url 'inventory_report' %}" class="btn btn-outline-secondary btn-sm">Inventory</a>
+        <a href="{% url 'agency_report' %}" class="btn btn-outline-secondary btn-sm">Agencies</a>
+        <a href="{% url 'employee_report' %}" class="btn btn-outline-secondary btn-sm">Employees</a>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+
+            <form method="get" class="d-flex flex-wrap gap-3 align-items-end">
+
+                <div style="flex: 1 1 150px;">
+                    <label class="form-label small text-muted mb-1">Start Date</label>
+                    <input type="date" name="start_date" class="form-control" value="{{ start_date|date:'Y-m-d' }}">
+                </div>
+
+                <div style="flex: 1 1 150px;">
+                    <label class="form-label small text-muted mb-1">End Date</label>
+                    <input type="date" name="end_date" class="form-control" value="{{ end_date|date:'Y-m-d' }}">
+                </div>
+
+                <div style="flex: 1 1 160px;">
+                    <label class="form-label small text-muted mb-1">Agency</label>
+                    <select name="agency" class="form-select">
+                        <option value="">All Agencies</option>
+                        {% for agency in agencies %}
+                        <option value="{{ agency.id }}" {% if selected_agency == agency.id|stringformat:"s" %}selected{% endif %}>
+                            {{ agency.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="flex: 1 1 160px;">
+                    <label class="form-label small text-muted mb-1">Category</label>
+                    <select name="category" class="form-select">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="flex: 1 1 140px;">
+                    <label class="form-label small text-muted mb-1">Revenue Chart</label>
+                    <select name="granularity" class="form-select">
+                        <option value="daily" {% if granularity == "daily" %}selected{% endif %}>Daily</option>
+                        <option value="weekly" {% if granularity == "weekly" %}selected{% endif %}>Weekly</option>
+                        <option value="monthly" {% if granularity == "monthly" %}selected{% endif %}>Monthly</option>
+                    </select>
+                </div>
+
+                <div style="flex: 0 1 auto;">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </div>
+
+                <div style="flex: 0 1 auto;">
+                    <a href="{% url 'reports_dashboard' %}" class="btn btn-outline-secondary">Reset Filters</a>
+                </div>
+
+                <div style="flex: 0 1 auto; margin-left: auto;">
+                    <a href="{% url 'reports_export_csv' %}?start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}&agency={{ selected_agency }}&category={{ selected_category }}" class="btn btn-outline-primary">
+                        <i class="bi bi-download me-1"></i> Export CSV
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    {% if not has_data %}
+    <div class="alert alert-secondary text-center py-4">
+        No sales found for the selected period. Try widening the date range or clearing filters.
+    </div>
+    {% endif %}
+
+    <!-- Summary cards -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total Sales</p>
+                        <h2>{{ total_sales }}</h2>
+                        {% if sales_growth is not None %}
+                        <span class="{% if sales_growth >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            {% if sales_growth > 0 %}↑{% elif sales_growth < 0 %}↓{% else %}→{% endif %}
+                            {{ sales_growth }}% vs previous period
+                        </span>
+                        {% else %}
+                        <span class="text-muted">→ no prior data to compare</span>
+                        {% endif %}
+                    </div>
+                    <div class="icon bg-primary-soft"><i class="bi bi-cart-check"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total Revenue</p>
+                        <h2>{{ total_revenue }} FCFA</h2>
+                        {% if revenue_growth is not None %}
+                        <span class="{% if revenue_growth >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            {% if revenue_growth > 0 %}↑{% elif revenue_growth < 0 %}↓{% else %}→{% endif %}
+                            {{ revenue_growth }}% vs previous period
+                        </span>
+                        {% else %}
+                        <span class="text-muted">→ no prior data to compare</span>
+                        {% endif %}
+                    </div>
+                    <div class="icon bg-success-soft"><i class="bi bi-cash-stack"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Products Sold</p>
+                        <h2>{{ total_products_sold }}</h2>
+                        {% if products_growth is not None %}
+                        <span class="{% if products_growth >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            {% if products_growth > 0 %}↑{% elif products_growth < 0 %}↓{% else %}→{% endif %}
+                            {{ products_growth }}% vs previous period
+                        </span>
+                        {% else %}
+                        <span class="text-muted">→ no prior data to compare</span>
+                        {% endif %}
+                    </div>
+                    <div class="icon bg-warning-soft"><i class="bi bi-box-seam"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Average Sale Value</p>
+                        <h2>{{ avg_sale_value }} FCFA</h2>
+                    </div>
+                    <div class="icon bg-primary-soft"><i class="bi bi-graph-up"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Customers (this period)</p>
+                        <h2>{{ total_customers }}</h2>
+                        {% if customers_growth is not None %}
+                        <span class="{% if customers_growth >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            {% if customers_growth > 0 %}↑{% elif customers_growth < 0 %}↓{% else %}→{% endif %}
+                            {{ customers_growth }}% vs previous period
+                        </span>
+                        {% else %}
+                        <span class="text-muted">→ no prior data to compare</span>
+                        {% endif %}
+                    </div>
+                    <div class="icon bg-success-soft"><i class="bi bi-people"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Low Stock Products</p>
+                        <h2>{{ low_stock_count }}</h2>
+                        <span class="text-danger"><a href="{% url 'stock_alerts' %}" class="text-danger">View alerts</a></span>
+                    </div>
+                    <div class="icon bg-danger-soft"><i class="bi bi-exclamation-triangle"></i></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Charts -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-xl-8 col-lg-7 col-12">
+            <div class="card chart-card">
+                <div class="card-header bg-white border-0">
+                    <h5 class="fw-bold mb-0">Revenue Over Time</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="reportsRevenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-5 col-12">
+            <div class="card chart-card">
+                <div class="card-header bg-white border-0">
+                    <h5 class="fw-bold mb-0">Sales by Agency</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="reportsAgencyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Top Selling Products -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h6 class="mb-0">Top Selling Products</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th class="text-end">Quantity Sold</th>
+                        <th class="text-end">Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in top_products %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ product.product__name }}</td>
+                        <td>{{ product.product__category__name|default:"—" }}</td>
+                        <td class="text-end">{{ product.qty }}</td>
+                        <td class="text-end">{{ product.revenue }} FCFA</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">No product sales in this period.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{{ revenue_labels|json_script:"revenue-labels" }}
+{{ revenue_data|json_script:"revenue-data" }}
+{{ agency_labels|json_script:"agency-labels" }}
+{{ agency_data|json_script:"agency-data" }}
+
+<script>
+(function () {
+    var revenueLabels = JSON.parse(document.getElementById('revenue-labels').textContent);
+    var revenueData = JSON.parse(document.getElementById('revenue-data').textContent);
+    var agencyLabels = JSON.parse(document.getElementById('agency-labels').textContent);
+    var agencyData = JSON.parse(document.getElementById('agency-data').textContent);
+
+    var revenueCtx = document.getElementById('reportsRevenueChart');
+    if (revenueCtx && typeof Chart !== 'undefined') {
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: revenueLabels,
+                datasets: [{
+                    label: 'Revenue (FCFA)',
+                    data: revenueData,
+                    borderColor: '#2563EB',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+    }
+
+    var agencyCtx = document.getElementById('reportsAgencyChart');
+    if (agencyCtx && typeof Chart !== 'undefined') {
+        new Chart(agencyCtx, {
+            type: 'doughnut',
+            data: {
+                labels: agencyLabels,
+                datasets: [{
+                    data: agencyData,
+                    backgroundColor: ['#2563EB', '#16A34A', '#F59E0B', '#DC2626', '#7C3AED']
+                }]
+            },
+            options: { responsive: true }
+        });
+    }
+})();
+</script>
+
+{% endblock %}

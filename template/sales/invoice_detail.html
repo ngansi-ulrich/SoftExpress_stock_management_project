@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Invoice {{ invoice.invoice_number }} | SoftExpress ERP{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/invoice.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid no-print mb-3">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+        <a href="{% url 'invoice_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Invoices
+        </a>
+
+        <div>
+            <button type="button" class="btn btn-primary" onclick="window.print()">
+                <i class="bi bi-printer me-2"></i>
+                Print Invoice
+            </button>
+
+            <a href="{% url 'invoice_pdf' invoice.pk %}" class="btn btn-outline-primary">
+                <i class="bi bi-download me-2"></i>
+                Download PDF
+            </a>
+        </div>
+
+    </div>
+
+    {% include 'components/messages.html' %}
+
+</div>
+
+<div class="container-fluid">
+
+    <div class="card invoice-sheet p-5">
+
+        <!-- Top -->
+        <div class="d-flex justify-content-between align-items-start border-bottom pb-4 mb-4">
+
+            <div>
+                <h3 class="fw-bold mb-1">SOFTEXPRESS</h3>
+                <p class="text-muted mb-0">Computer Sales &amp; Services</p>
+                <p class="text-muted mb-0">Douala &bull; Yaound&eacute; &bull; Bafoussam</p>
+            </div>
+
+            <div class="text-end">
+                <h4 class="fw-bold mb-1">INVOICE</h4>
+                <p class="mb-0">{{ invoice.invoice_number }}</p>
+                <p class="text-muted mb-0">{{ invoice.issued_at|date:"d F Y" }}</p>
+            </div>
+
+        </div>
+
+        <!-- Bill To / Agency -->
+        <div class="row mb-4">
+
+            <div class="col-md-6">
+                <h6 class="text-muted text-uppercase small">Bill To</h6>
+                {% if sale.customer %}
+                <p class="mb-0 fw-semibold">{{ sale.customer.first_name }} {{ sale.customer.last_name }}</p>
+                <p class="mb-0">{{ sale.customer.phone }}</p>
+                <p class="mb-0">{{ sale.customer.email|default:"" }}</p>
+                {% else %}
+                <p class="text-muted mb-0">No client on record for this sale.</p>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6 text-md-end">
+                <h6 class="text-muted text-uppercase small">Agency</h6>
+                {% if sale.agency %}
+                <p class="mb-0 fw-semibold">SoftExpress {{ sale.agency.name }}</p>
+                <p class="mb-0">{{ sale.agency.address|default:"" }}</p>
+                <p class="mb-0">{{ sale.agency.phone|default:"" }}</p>
+                {% else %}
+                <p class="text-muted mb-0">No agency on record for this sale.</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- Items -->
+        <div class="table-responsive mb-4">
+
+            <table class="table">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th class="text-end">Qty</th>
+                        <th class="text-end">Unit Price</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.product.name }}</td>
+                        <td class="text-end">{{ item.quantity }}</td>
+                        <td class="text-end">{{ item.unit_price }}</td>
+                        <td class="text-end">{{ item.subtotal }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No items on this sale.</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- Totals -->
+        <div class="row justify-content-end mb-4">
+
+            <div class="col-md-5">
+
+                <div class="d-flex justify-content-between border-top pt-2">
+                    <strong>TOTAL</strong>
+                    <strong>{{ sale.total_amount }} FCFA</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Payment Info -->
+        <div class="border-top pt-4 mb-4">
+
+            <h6 class="text-muted text-uppercase small mb-3">Payment Information</h6>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Payment method:</strong> {{ sale.get_payment_method_display }}</p>
+                    <p class="mb-1">
+                        <strong>Payment status:</strong>
+                        {% if sale.payment_status == 'PAID' %}
+                        <span class="badge bg-success">PAID</span>
+                        {% elif sale.payment_status == 'PARTIAL' %}
+                        <span class="badge bg-warning">PARTIAL</span>
+                        {% else %}
+                        <span class="badge bg-danger">PENDING</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-1"><strong>Amount:</strong> {{ sale.total_amount }} FCFA</p>
+                    {% if balance_known %}
+                    <p class="mb-1"><strong>Balance:</strong> {{ balance }} FCFA</p>
+                    {% else %}
+                    <p class="mb-1 text-muted"><strong>Balance:</strong> partial amount paid isn't tracked yet</p>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-muted border-top pt-4">
+            <p class="mb-1">Thank you for choosing SoftExpress.</p>
+            <p class="mb-0 small">SoftExpress &bull; Douala &bull; Yaound&eacute; &bull; Bafoussam</p>
+        </div>
+
+    </div>
+
+</div>
+
+{% if auto_print %}
+<script>
+    window.onload = function () { window.print(); };
+</script>
+{% endif %}
+
+{% endblock %}

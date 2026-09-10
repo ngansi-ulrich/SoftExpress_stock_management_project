@@ -25,4 +25,12 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('employees/',include('employees.urls')),
     path('agencies/',include('agencies.urls')),
+    path('products/',include('products.urls')),
+    path('inventory/',include('inventory.urls')),
+    path('transfers/',include('transfers.urls')),
+    path('suppliers/',include('suppliers.urls')),
+    path('sales/',include('sales.urls')),
+    path('customers/',include('customers.urls')),
+    path('invoices/',include('sales.invoice_urls')),
+    path('reports/', include('reports.urls')),
 ]

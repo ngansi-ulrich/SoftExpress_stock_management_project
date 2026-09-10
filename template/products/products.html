@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Products{% endblock %}
 
 {% block content %}
@@ -25,16 +25,6 @@
 
         <div>
 
-            <button class="btn btn-success me-2">
-                <i class="bi bi-file-earmark-excel"></i>
-                Import
-            </button>
-
-            <button class="btn btn-outline-primary me-2">
-                <i class="bi bi-download"></i>
-                Export
-            </button>
-
             <button
                 class="btn btn-primary"
                 data-bs-toggle="modal"
@@ -50,130 +40,35 @@
 
     </div>
 
-    <!-- KPI Cards -->
+    {% include 'components/messages.html' %}
+
+    <!-- Summary Cards -->
 
     <div class="row g-4 mb-4">
 
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-6">
 
             <div class="card dashboard-card">
-
                 <p>Total Products</p>
-
-                <h2>2,547</h2>
-
-                <small class="text-success">
-                    +125 this month
-                </small>
-
+                <h2>{{ total_products }}</h2>
             </div>
 
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-6">
 
             <div class="card dashboard-card">
-
-                <p>Low Stock</p>
-
-                <h2>17</h2>
-
-                <small class="text-danger">
-                    Immediate attention
-                </small>
-
+                <p>Total Categories</p>
+                <h2>{{ total_categories }}</h2>
             </div>
 
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-6">
 
             <div class="card dashboard-card">
-
-                <p>Out of Stock</p>
-
-                <h2>4</h2>
-
-                <small class="text-warning">
-                    Reorder required
-                </small>
-
-            </div>
-
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="card dashboard-card">
-
-                <p>Inventory Value</p>
-
-                <h2>215M FCFA</h2>
-
-                <small class="text-primary">
-                    Across all agencies
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Filters -->
-
-    <div class="card mb-4">
-
-        <div class="card-body">
-
-            <div class="row g-3">
-
-                <div class="col-lg-4">
-
-                    <input
-                        type="search"
-                        class="form-control"
-                        placeholder="Search product...">
-
-                </div>
-
-                <div class="col-lg-3">
-
-                    <select class="form-select">
-
-                        <option>All Categories</option>
-                        <option>Laptops</option>
-                        <option>Desktops</option>
-                        <option>Printers</option>
-                        <option>Accessories</option>
-
-                    </select>
-
-                </div>
-
-                <div class="col-lg-3">
-
-                    <select class="form-select">
-
-                        <option>All Agencies</option>
-                        <option>Douala</option>
-                        <option>Yaoundé</option>
-                        <option>Bafoussam</option>
-
-                    </select>
-
-                </div>
-
-                <div class="col-lg-2">
-
-                    <button class="btn btn-primary w-100">
-
-                        Filter
-
-                    </button>
-
-                </div>
-
+                <p><a href="{% url 'category_list' %}">Manage Categories</a></p>
+                <h2><i class="bi bi-diagram-3"></i></h2>
             </div>
 
         </div>
@@ -191,87 +86,62 @@
                 <thead>
 
                 <tr>
-
-                    <th>Image</th>
-
                     <th>Code</th>
-
                     <th>Product</th>
-
                     <th>Category</th>
-
+                    <th>Brand / Model</th>
                     <th>Agency</th>
-
-                    <th>Stock</th>
-
                     <th>Price</th>
-
-                    <th>Status</th>
-
                     <th>Actions</th>
-
                 </tr>
 
                 </thead>
 
                 <tbody>
 
+                {% for product in products %}
                 <tr>
 
+                    <td>{{ product.product_code }}</td>
+
                     <td>
-
-                        <img
-                            src="{% static 'img/laptop.png' %}"
-                            width="60"
-                            class="rounded">
-
+                        <a href="{% url 'product_detail' product.pk %}">
+                            {{ product.name }}
+                        </a>
                     </td>
 
-                    <td>LAP001</td>
+                    <td>{{ product.category.name }}</td>
 
-                    <td>HP EliteBook 840 G8</td>
+                    <td>{{ product.brand }} {{ product.model }}</td>
 
-                    <td>Laptop</td>
+                    <td>{{ product.agency|default:"—" }}</td>
 
-                    <td>Douala</td>
-
-                    <td>42</td>
-
-                    <td>520,000 FCFA</td>
+                    <td>{{ product.selling_price }} FCFA</td>
 
                     <td>
 
-                        <span class="badge bg-success">
-
-                            In Stock
-
-                        </span>
-
-                    </td>
-
-                    <td>
-
-                        <button class="btn btn-sm btn-primary">
-
+                        <a href="{% url 'product_detail' product.pk %}" class="btn btn-sm btn-primary">
                             View
+                        </a>
 
-                        </button>
-
-                        <button class="btn btn-sm btn-warning">
-
+                        <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-warning">
                             Edit
+                        </a>
 
-                        </button>
-
-                        <button class="btn btn-sm btn-danger">
-
+                        <a href="{% url 'product_delete' product.pk %}" class="btn btn-sm btn-danger">
                             Delete
-
-                        </button>
+                        </a>
 
                     </td>
 
                 </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        No products yet.
+                    </td>
+                </tr>
+                {% endfor %}
 
                 </tbody>
 

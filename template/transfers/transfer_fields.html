@@ -1,0 +1,33 @@
+<div class="row">
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ form.source_agency.id_for_label }}">From Agency</label>
+        {{ form.source_agency }}
+        {{ form.source_agency.errors }}
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ form.destination_agency.id_for_label }}">To Agency</label>
+        {{ form.destination_agency }}
+        {{ form.destination_agency.errors }}
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ form.product.id_for_label }}">Product</label>
+        {{ form.product }}
+        {{ form.product.errors }}
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ form.quantity.id_for_label }}">Quantity</label>
+        {{ form.quantity }}
+        {{ form.quantity.errors }}
+    </div>
+
+    {% if form.non_field_errors %}
+    <div class="col-12">
+        <div class="alert alert-danger py-2">{{ form.non_field_errors }}</div>
+    </div>
+    {% endif %}
+
+</div>

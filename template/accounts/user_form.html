@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if mode == 'add' %}Add User{% else %}Edit User{% endif %} | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h3 class="mb-1">{% if mode == 'add' %}Add User{% else %}Edit User{% endif %}</h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'user_list' %}">Users</a></li>
+                <li class="breadcrumb-item active">{% if mode == 'add' %}Add{% else %}Edit{% endif %}</li>
+            </ol>
+        </nav>
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <div class="card">
+        <div class="card-body">
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">First Name</label>
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Last Name</label>
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                    </div>
+
+                    {% if mode == 'add' %}
+                    <div class="col-md-6">
+                        <label class="form-label">Username</label>
+                        {{ form.username }}
+                        {{ form.username.errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Phone</label>
+                        {{ form.phone }}
+                        {{ form.phone.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Role</label>
+                        {{ form.role }}
+                        {{ form.role.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Agency</label>
+                        {{ form.agency }}
+                        {{ form.agency.errors }}
+                    </div>
+
+                    {% if mode == 'add' %}
+                    <div class="col-md-6">
+                        <label class="form-label">Password</label>
+                        {{ form.password }}
+                        {{ form.password.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Confirm Password</label>
+                        {{ form.confirm_password }}
+                        {{ form.confirm_password.errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="col-12">
+                        <div class="form-check">
+                            {{ form.is_active }}
+                            <label class="form-check-label">Account Active</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="{% url 'user_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        {% if mode == 'add' %}Create User{% else %}Save Changes{% endif %}
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

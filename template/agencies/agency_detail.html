@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Agency Details{% endblock %}
+{% block title %}{{ agency.name }}{% endblock %}
 
 {% block content %}
 
 <div class="container-fluid">
 
-    <!-- ==========================================
-        Header
-    =========================================== -->
+    <!-- Header -->
 
     <div class="d-flex justify-content-between align-items-center mb-4">
 
@@ -18,7 +16,7 @@
 
                 <i class="bi bi-building me-2"></i>
 
-                Douala Agency
+                {{ agency.name }}
 
             </h2>
 
@@ -32,109 +30,21 @@
 
         <div>
 
-            <button class="btn btn-primary">
+            <a href="{% url 'agency_update' agency.pk %}" class="btn btn-primary">
 
                 <i class="bi bi-pencil-square me-2"></i>
 
                 Edit
 
-            </button>
-
-            <button class="btn btn-success ms-2">
-
-                <i class="bi bi-arrow-left-right me-2"></i>
-
-                Transfer Stock
-
-            </button>
+            </a>
 
         </div>
 
     </div>
 
-    <!-- ==========================================
-        Statistics
-    =========================================== -->
+    {% include 'components/messages.html' %}
 
-    <div class="row g-4 mb-4">
-
-        <div class="col-lg-3">
-
-            <div class="card dashboard-card">
-
-                <p>Total Products</p>
-
-                <h2 class="counter">850</h2>
-
-                <small class="text-success">
-
-                    +5% this month
-
-                </small>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3">
-
-            <div class="card dashboard-card">
-
-                <p>Employees</p>
-
-                <h2 class="counter">12</h2>
-
-                <small class="text-primary">
-
-                    Active Staff
-
-                </small>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3">
-
-            <div class="card dashboard-card">
-
-                <p>Today's Sales</p>
-
-                <h2>2.3M FCFA</h2>
-
-                <small class="text-success">
-
-                    +11%
-
-                </small>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3">
-
-            <div class="card dashboard-card">
-
-                <p>Transfers</p>
-
-                <h2>18</h2>
-
-                <small class="text-warning">
-
-                    This Month
-
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- ==========================================
-        Agency Information
-    =========================================== -->
+    <!-- Info + Employees -->
 
     <div class="row g-4 mb-4">
 
@@ -143,13 +53,7 @@
             <div class="card h-100">
 
                 <div class="card-header">
-
-                    <h5>
-
-                        Agency Information
-
-                    </h5>
-
+                    <h5>Agency Information</h5>
                 </div>
 
                 <div class="card-body">
@@ -157,51 +61,39 @@
                     <table class="table table-borderless">
 
                         <tr>
-
                             <th>Manager</th>
-
-                            <td>Jean Pierre</td>
-
+                            <td>{{ agency.manager|default:"—" }}</td>
                         </tr>
 
                         <tr>
-
                             <th>Phone</th>
-
-                            <td>+237 677000000</td>
-
+                            <td>{{ agency.phone|default:"—" }}</td>
                         </tr>
 
                         <tr>
-
                             <th>Email</th>
-
-                            <td>douala@softexpress.cm</td>
-
+                            <td>{{ agency.email|default:"—" }}</td>
                         </tr>
 
                         <tr>
-
                             <th>City</th>
-
-                            <td>Douala</td>
-
+                            <td>{{ agency.city }}</td>
                         </tr>
 
                         <tr>
+                            <th>Address</th>
+                            <td>{{ agency.address }}</td>
+                        </tr>
 
+                        <tr>
                             <th>Status</th>
-
                             <td>
-
-                                <span class="badge bg-success">
-
-                                    Active
-
-                                </span>
-
+                                {% if agency.is_active %}
+                                <span class="badge bg-success">Active</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
                             </td>
-
                         </tr>
 
                     </table>
@@ -212,219 +104,49 @@
 
         </div>
 
-        <!-- Chart -->
-
         <div class="col-lg-8">
 
             <div class="card h-100">
 
                 <div class="card-header">
-
-                    <h5>
-
-                        Monthly Sales
-
-                    </h5>
-
+                    <h5>Employees</h5>
                 </div>
 
-                <div class="card-body">
+                <div class="table-responsive">
 
-                    <canvas id="agencyRevenueChart"></canvas>
+                    <table class="table table-hover mb-0">
+
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Phone</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for employee in employees %}
+                            <tr>
+                                <td>{{ employee.first_name }} {{ employee.last_name }}</td>
+                                <td>{{ employee.get_role_display }}</td>
+                                <td>{{ employee.phone }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-3">
+                                    No employees assigned to this agency yet.
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
             </div>
-
-        </div>
-
-    </div>
-
-    <!-- ==========================================
-        Employees
-    =========================================== -->
-
-    <div class="card mb-4">
-
-        <div class="card-header d-flex justify-content-between">
-
-            <h5>
-
-                Employees
-
-            </h5>
-
-            <button class="btn btn-primary btn-sm">
-
-                Add Employee
-
-            </button>
-
-        </div>
-
-        <div class="table-responsive">
-
-            <table class="table table-hover">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Name</th>
-
-                        <th>Role</th>
-
-                        <th>Phone</th>
-
-                        <th>Status</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <tr>
-
-                        <td>Jean Pierre</td>
-
-                        <td>Manager</td>
-
-                        <td>677000000</td>
-
-                        <td>
-
-                            <span class="badge bg-success">
-
-                                Active
-
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>Eric Ndzi</td>
-
-                        <td>Sales Officer</td>
-
-                        <td>695000000</td>
-
-                        <td>
-
-                            <span class="badge bg-success">
-
-                                Active
-
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-    <!-- ==========================================
-        Recent Stock Transfers
-    =========================================== -->
-
-    <div class="card">
-
-        <div class="card-header">
-
-            <h5>
-
-                Recent Stock Transfers
-
-            </h5>
-
-        </div>
-
-        <div class="table-responsive">
-
-            <table class="table table-hover">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Date</th>
-
-                        <th>Product</th>
-
-                        <th>From</th>
-
-                        <th>To</th>
-
-                        <th>Quantity</th>
-
-                        <th>Status</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <tr>
-
-                        <td>04/08/2026</td>
-
-                        <td>HP EliteBook 840</td>
-
-                        <td>Yaoundé</td>
-
-                        <td>Douala</td>
-
-                        <td>15</td>
-
-                        <td>
-
-                            <span class="badge bg-success">
-
-                                Completed
-
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>01/08/2026</td>
-
-                        <td>Dell Monitor</td>
-
-                        <td>Bafoussam</td>
-
-                        <td>Douala</td>
-
-                        <td>10</td>
-
-                        <td>
-
-                            <span class="badge bg-warning">
-
-                                Pending
-
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
 
         </div>
 

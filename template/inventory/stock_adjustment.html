@@ -47,23 +47,9 @@ Modify inventory quantities with proper tracking.
 </div>
 
 
-
-<a href="#" class="btn btn-outline-primary">
-
-
-<i class="bi bi-clock-history me-2"></i>
-
-
-View History
-
-
-</a>
-
-
 </div>
 
-
-
+{% include 'components/messages.html' %}
 
 
 <!-- Form Card -->
@@ -85,63 +71,17 @@ View History
 <div class="row g-4">
 
 
-
-
-
 <!-- Product -->
 
 
 <div class="col-md-6">
 
+<label class="form-label" for="{{ form.product.id_for_label }}">Product</label>
 
-<label class="form-label">
-
-
-Product
-
-
-</label>
-
-
-
-<select class="form-select">
-
-
-<option>
-
-Select Product
-
-</option>
-
-
-<option>
-
-HP EliteBook 840 G8
-
-</option>
-
-
-<option>
-
-Dell Monitor
-
-</option>
-
-
-<option>
-
-Canon Printer
-
-</option>
-
-
-</select>
-
+{{ form.product }}
+{{ form.product.errors }}
 
 </div>
-
-
-
 
 
 <!-- Agency -->
@@ -149,56 +89,12 @@ Canon Printer
 
 <div class="col-md-6">
 
+<label class="form-label" for="{{ form.agency.id_for_label }}">Agency</label>
 
-<label class="form-label">
-
-
-Agency
-
-
-</label>
-
-
-
-<select class="form-select">
-
-
-<option>
-
-Select Agency
-
-</option>
-
-
-<option>
-
-Douala
-
-</option>
-
-
-<option>
-
-Yaoundé
-
-</option>
-
-
-<option>
-
-Bafoussam
-
-</option>
-
-
-</select>
-
+{{ form.agency }}
+{{ form.agency.errors }}
 
 </div>
-
-
-
-
 
 
 <!-- Adjustment Type -->
@@ -206,49 +102,12 @@ Bafoussam
 
 <div class="col-md-6">
 
+<label class="form-label" for="{{ form.adjustment_type.id_for_label }}">Adjustment Type</label>
 
-<label class="form-label">
-
-
-Adjustment Type
-
-
-</label>
-
-
-
-<select class="form-select">
-
-
-<option value="add">
-
-Add Stock (+)
-
-</option>
-
-
-<option value="remove">
-
-Remove Stock (-)
-
-</option>
-
-
-<option value="correction">
-
-Correction
-
-</option>
-
-
-</select>
-
-
+{{ form.adjustment_type }}
+{{ form.adjustment_type.errors }}
 
 </div>
-
-
-
 
 
 <!-- Quantity -->
@@ -256,30 +115,12 @@ Correction
 
 <div class="col-md-6">
 
+<label class="form-label" for="{{ form.quantity.id_for_label }}">Quantity</label>
 
-<label class="form-label">
-
-
-Quantity
-
-
-</label>
-
-
-
-<input
-
-type="number"
-
-class="form-control"
-
-placeholder="Enter quantity">
-
+{{ form.quantity }}
+{{ form.quantity.errors }}
 
 </div>
-
-
-
 
 
 <!-- Reason -->
@@ -287,34 +128,12 @@ placeholder="Enter quantity">
 
 <div class="col-md-12">
 
+<label class="form-label" for="{{ form.reason.id_for_label }}">Reason</label>
 
-<label class="form-label">
-
-
-Reason
-
-
-</label>
-
-
-
-<textarea
-
-class="form-control"
-
-rows="4"
-
-placeholder="Example: New supplier delivery">
-
-</textarea>
-
-
+{{ form.reason }}
+{{ form.reason.errors }}
 
 </div>
-
-
-
-
 
 
 <!-- Responsible User -->
@@ -322,49 +141,12 @@ placeholder="Example: New supplier delivery">
 
 <div class="col-md-6">
 
+<label class="form-label" for="{{ form.performed_by.id_for_label }}">Responsible Employee</label>
 
-<label class="form-label">
-
-
-Responsible Employee
-
-
-</label>
-
-
-
-<select class="form-select">
-
-
-<option>
-
-Admin
-
-</option>
-
-
-<option>
-
-Agency Manager
-
-</option>
-
-
-<option>
-
-Store Keeper
-
-</option>
-
-
-</select>
-
-
+{{ form.performed_by }}
+{{ form.performed_by.errors }}
 
 </div>
-
-
-
 
 
 <!-- Reference -->
@@ -372,28 +154,12 @@ Store Keeper
 
 <div class="col-md-6">
 
+<label class="form-label" for="{{ form.reference.id_for_label }}">Reference Number</label>
 
-<label class="form-label">
-
-
-Reference Number
-
-
-</label>
-
-
-
-<input
-
-type="text"
-
-class="form-control"
-
-placeholder="PO-2026-001">
-
+{{ form.reference }}
+{{ form.reference.errors }}
 
 </div>
-
 
 
 </div>
@@ -411,17 +177,11 @@ placeholder="PO-2026-001">
 <div class="d-flex justify-content-end">
 
 
-<button
-
-type="reset"
-
-class="btn btn-secondary me-2">
-
+<a href="{% url 'inventory_list' %}" class="btn btn-secondary me-2">
 
 Cancel
 
-
-</button>
+</a>
 
 
 

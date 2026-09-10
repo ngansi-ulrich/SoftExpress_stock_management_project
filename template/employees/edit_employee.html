@@ -1,17 +1,83 @@
-{% load static %}
 {% extends 'base.html' %}
-{% block title %}Catégories{% endblock %}
-{% block header_title %}Gestion des Catégories{% endblock %}
+{% load static %}
+
+{% block title %}Edit Employee | SoftExpress ERP{% endblock %}
 
 {% block content %}
-<h1>Edit Employee</h1>
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
+<div class="container-fluid">
 
-    <button type="submit">
-        Update
-    </button>
-</form>
+    <div class="mb-4">
+        <h3 class="mb-1">Edit Employee</h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'employee_list' %}">Employees</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit</li>
+            </ol>
+        </nav>
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.first_name.id_for_label }}">First Name</label>
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.last_name.id_for_label }}">Last Name</label>
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.role.id_for_label }}">Role</label>
+                        {{ form.role }}
+                        {{ form.role.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.agency.id_for_label }}">Agency</label>
+                        {{ form.agency }}
+                        {{ form.agency.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.phone.id_for_label }}">Phone</label>
+                        {{ form.phone }}
+                        {{ form.phone.errors }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.email.id_for_label }}">Email</label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="{% url 'employee_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update Employee</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
 {% endblock %}

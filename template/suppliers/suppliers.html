@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Suppliers | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+        <div>
+            <h3 class="mb-1">Suppliers</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Suppliers</li>
+                </ol>
+            </nav>
+        </div>
+
+        <a href="{% url 'add_supplier' %}" class="btn btn-primary">
+            <i class="bi bi-truck me-1"></i>
+            Add Supplier
+        </a>
+
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-md-3">
+            <div class="card dashboard-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-primary-subtle text-primary">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <h4 class="mb-0">{{ total_suppliers }}</h4>
+                    <p>Total Suppliers</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ active_suppliers }}</h4>
+                        <p>Active Suppliers</p>
+                    </div>
+                    <div class="icon bg-success-soft">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card table-card">
+
+        <div class="card-header">
+            <h6 class="mb-0">Supplier List</h6>
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>Supplier</th>
+                            <th>Contact Person</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>City</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for supplier in suppliers %}
+                        <tr>
+
+                            <td class="fw-semibold">{{ supplier.name }}</td>
+
+                            <td>{{ supplier.contact_person|default:"—" }}</td>
+
+                            <td>{{ supplier.phone|default:"—" }}</td>
+
+                            <td>{{ supplier.email|default:"—" }}</td>
+
+                            <td>{{ supplier.city|default:"—" }}</td>
+
+                            <td>
+                                {% if supplier.is_active %}
+                                <span class="badge bg-success-subtle text-success">Active</span>
+                                {% else %}
+                                <span class="badge bg-danger-subtle text-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-end">
+                                <a
+                                    href="{% url 'supplier_edit' supplier.id  %}"
+                                    class="btn btn-sm btn-icon"
+                                    title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <a
+                                    href="{% url 'supplier_delete' supplier.id %}"
+                                    class="btn btn-sm btn-icon text-danger"
+                                    title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+
+                            </td>
+
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                No suppliers yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

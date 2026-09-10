@@ -1,0 +1,54 @@
+<div class="row">
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ form.name.id_for_label }}">Product Name</label>
+        {{ form.name }}
+        {{ form.name.errors }}
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ form.category.id_for_label }}">Category</label>
+        {{ form.category }}
+        {{ form.category.errors }}
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <label class="form-label" for="{{ form.brand.id_for_label }}">Brand</label>
+        {{ form.brand }}
+        {{ form.brand.errors }}
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <label class="form-label" for="{{ form.model.id_for_label }}">Model</label>
+        {{ form.model }}
+        {{ form.model.errors }}
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <label class="form-label" for="{{ form.selling_price.id_for_label }}">Selling Price (FCFA)</label>
+        {{ form.selling_price }}
+        {{ form.selling_price.errors }}
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ form.agency.id_for_label }}">Agency</label>
+        {{ form.agency }}
+        {{ form.agency.errors }}
+    </div>
+
+    <div class="col-md-6 mb-3 d-flex align-items-end">
+        <div class="form-check">
+            {{ form.requires_serial_tracking }}
+            <label class="form-check-label" for="{{ form.requires_serial_tracking.id_for_label }}">
+                Requires serial number tracking
+            </label>
+        </div>
+    </div>
+
+    <div class="col-12 mb-3">
+        <label class="form-label" for="{{ form.description.id_for_label }}">Description</label>
+        {{ form.description }}
+        {{ form.description.errors }}
+    </div>
+
+</div>

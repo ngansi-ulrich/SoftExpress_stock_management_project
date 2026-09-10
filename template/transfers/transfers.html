@@ -74,8 +74,7 @@ New Transfer
 
 </div>
 
-
-
+{% include 'components/messages.html' %}
 
 
 <!-- Statistics -->
@@ -98,11 +97,7 @@ Pending Transfers
 </p>
 
 
-<h2>
-
-8
-
-</h2>
+<h2>{{ pending_count }}</h2>
 
 
 <span class="text-warning">
@@ -129,21 +124,17 @@ Waiting approval
 
 <p>
 
-Completed
+Approved
 
 </p>
 
 
-<h2>
-
-125
-
-</h2>
+<h2>{{ approved_count }}</h2>
 
 
 <span class="text-success">
 
-This month
+Total approved
 
 </span>
 
@@ -170,16 +161,12 @@ Products Moved
 </p>
 
 
-<h2>
-
-540
-
-</h2>
+<h2>{{ products_moved }}</h2>
 
 
 <span>
 
-Units transferred
+Units transferred (approved)
 
 </span>
 
@@ -206,16 +193,12 @@ Agencies Connected
 </p>
 
 
-<h2>
-
-3
-
-</h2>
+<h2>{{ agencies_connected }}</h2>
 
 
 <span>
 
-Douala / Yaoundé / Bafoussam
+Involved in a transfer
 
 </span>
 
@@ -239,7 +222,7 @@ Douala / Yaoundé / Bafoussam
 <div class="card">
 
 
-<div class="card-header">
+<div class="card-header d-flex justify-content-between align-items-center">
 
 
 <h5 class="fw-bold">
@@ -247,6 +230,10 @@ Douala / Yaoundé / Bafoussam
 Recent Transfers
 
 </h5>
+
+<a href="{% url 'transfer_history' %}" class="btn btn-sm btn-outline-primary">
+Full History
+</a>
 
 
 </div>
@@ -294,157 +281,41 @@ Recent Transfers
 <tbody>
 
 
-
+{% for transfer in transfers %}
 <tr>
 
+<td>{{ transfer.transfer_number }}</td>
+
+<td>{{ transfer.product.name }}</td>
+
+<td>{{ transfer.source_agency.name }}</td>
+
+<td>{{ transfer.destination_agency.name }}</td>
+
+<td>{{ transfer.quantity }}</td>
+
+<td>{{ transfer.requested_by.first_name }} {{ transfer.requested_by.last_name }}</td>
 
 <td>
-
-TRF001
-
+{% if transfer.status == 'PENDING' %}
+<span class="badge bg-warning">Pending</span>
+{% elif transfer.status == 'APPROVED' %}
+<span class="badge bg-success">Approved</span>
+{% else %}
+<span class="badge bg-danger">Rejected</span>
+{% endif %}
 </td>
-
 
 <td>
-
-HP EliteBook 840
-
+<a href="{% url 'transfer_detail' transfer.pk %}" class="btn btn-sm btn-primary">View</a>
 </td>
-
-
-<td>
-
-Douala
-
-</td>
-
-
-<td>
-
-Yaoundé
-
-</td>
-
-
-<td>
-
-15
-
-</td>
-
-
-<td>
-
-Store Keeper
-
-</td>
-
-
-<td>
-
-
-<span class="badge bg-warning">
-
-Pending
-
-</span>
-
-
-</td>
-
-
-<td>
-
-
-<button class="btn btn-sm btn-primary">
-
-View
-
-</button>
-
-
-</td>
-
 
 </tr>
-
-
-
-
-
+{% empty %}
 <tr>
-
-
-<td>
-
-TRF002
-
-</td>
-
-
-<td>
-
-Dell Monitor
-
-</td>
-
-
-<td>
-
-Yaoundé
-
-</td>
-
-
-<td>
-
-Bafoussam
-
-</td>
-
-
-<td>
-
-10
-
-</td>
-
-
-<td>
-
-Manager
-
-</td>
-
-
-<td>
-
-
-<span class="badge bg-success">
-
-Completed
-
-</span>
-
-
-</td>
-
-
-<td>
-
-
-<button class="btn btn-sm btn-primary">
-
-View
-
-</button>
-
-
-</td>
-
-
+<td colspan="8" class="text-center text-muted py-4">No transfers yet.</td>
 </tr>
-
+{% endfor %}
 
 
 </tbody>

@@ -27,19 +27,9 @@
 
         </div>
 
-        <div>
-
-            <button class="btn btn-primary">
-
-                <i class="bi bi-plus-circle me-2"></i>
-
-                New Sale
-
-            </button>
-
-        </div>
-
     </div>
+
+    {% include 'components/messages.html' %}
 
     <!-- ===========================
         Statistics Cards
@@ -57,22 +47,12 @@
 
                         <p>Total Products</p>
 
-                        <h2>2,547</h2>
-
-                        <span class="text-success">
-
-                            <i class="bi bi-arrow-up"></i>
-
-                            +12%
-
-                        </span>
+                        <h2 class="counter" data-target="{{ total_products }}">{{ total_products }}</h2>
 
                     </div>
 
                     <div class="icon bg-primary-soft">
-
                         <i class="bi bi-box-seam"></i>
-
                     </div>
 
                 </div>
@@ -89,24 +69,14 @@
 
                     <div>
 
-                        <p>Revenue Today</p>
+                        <p>Total Agencies</p>
 
-                        <h2 class="counter" data-target="2547">2.7M FCFA</h2>
-
-                        <span class="text-success">
-
-                            <i class="bi bi-arrow-up"></i>
-
-                            +8%
-
-                        </span>
+                        <h2 class="counter" data-target="{{ total_agencies }}">{{ total_agencies }}</h2>
 
                     </div>
 
                     <div class="icon bg-success-soft">
-
-                        <i class="bi bi-cash-stack"></i>
-
+                        <i class="bi bi-building"></i>
                     </div>
 
                 </div>
@@ -125,20 +95,12 @@
 
                         <p>Employees</p>
 
-                        <h2 class="counter" data-target="2547">38</h2>
-
-                        <span class="text-primary">
-
-                            Active
-
-                        </span>
+                        <h2 class="counter" data-target="{{ total_employees }}">{{ total_employees }}</h2>
 
                     </div>
 
                     <div class="icon bg-warning-soft">
-
                         <i class="bi bi-people"></i>
-
                     </div>
 
                 </div>
@@ -155,22 +117,14 @@
 
                     <div>
 
-                        <p>Low Stock</p>
+                        <p>Total Customers</p>
 
-                        <h2 class="counter" data-target="2547">17</h2>
-
-                        <span class="text-danger">
-
-                            Needs Attention
-
-                        </span>
+                        <h2 class="counter" data-target="{{ total_customers }}">{{ total_customers }}</h2>
 
                     </div>
 
                     <div class="icon bg-danger-soft">
-
-                        <i class="bi bi-exclamation-triangle"></i>
-
+                        <i class="bi bi-person-lines-fill"></i>
                     </div>
 
                 </div>
@@ -183,6 +137,9 @@
 
     <!-- ===========================
         Charts
+        Note: canvases are kept unwired since there's no Sale model yet to
+        chart real revenue/agency data from. Left in place in case
+        dashboard.js already targets #revenueChart / #agencyChart by ID.
     ============================ -->
 
     <div class="row g-4 mb-4">
@@ -192,42 +149,27 @@
             <div class="card chart-card">
 
                 <div class="card-header bg-white border-0">
-
-                    <h5 class="fw-bold mb-0">
-
-                        Revenue Overview
-
-                    </h5>
-
+                    <h5 class="fw-bold mb-0">Revenue Overview</h5>
                 </div>
 
                 <div class="card-body">
-
                     <canvas id="revenueChart"></canvas>
-
                 </div>
 
             </div>
 
         </div>
+
         <div class="col-xl-4 col-lg-5 col-12">
 
             <div class="card chart-card">
 
                 <div class="card-header bg-white border-0">
-
-                    <h5 class="fw-bold mb-0">
-
-                        Sales by Agency
-
-                    </h5>
-
+                    <h5 class="fw-bold mb-0">Sales by Agency</h5>
                 </div>
 
                 <div class="card-body">
-
                     <canvas id="agencyChart"></canvas>
-
                 </div>
 
             </div>
@@ -242,116 +184,19 @@
 
     <div class="row g-4">
 
-        <!-- Recent Sales -->
+        <!-- Recent Sales: no Sale model yet -->
 
         <div class="col-xl-8 col-lg-7 col-12">
 
             <div class="card">
 
                 <div class="card-header bg-white">
-
-                    <h5 class="fw-bold">
-
-                        Recent Sales
-
-                    </h5>
-
+                    <h5 class="fw-bold">Recent Sales</h5>
                 </div>
 
-                <div class="table-responsive">
-
-                    <table class="table table-hover align-middle mb-0">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>Invoice</th>
-
-                                <th>Client</th>
-
-                                <th>Agency</th>
-
-                                <th>Amount</th>
-
-                                <th>Status</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-
-                                <td>#INV001</td>
-
-                                <td>John Doe</td>
-
-                                <td>Douala</td>
-
-                                <td>350,000 FCFA</td>
-
-                                <td>
-
-                                    <span class="badge bg-success">
-
-                                        Paid
-
-                                    </span>
-
-                                </td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td>#INV002</td>
-
-                                <td>Jane Smith</td>
-
-                                <td>Yaoundé</td>
-
-                                <td>510,000 FCFA</td>
-
-                                <td>
-
-                                    <span class="badge bg-warning">
-
-                                        Pending
-
-                                    </span>
-
-                                </td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td>#INV003</td>
-
-                                <td>Peter Brown</td>
-
-                                <td>Bafoussam</td>
-
-                                <td>160,000 FCFA</td>
-
-                                <td>
-
-                                    <span class="badge bg-success">
-
-                                        Paid
-
-                                    </span>
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
+                <div class="card-body text-center text-muted py-5">
+                    Sales tracking isn't set up yet — this table will populate once a
+                    Sale model exists.
                 </div>
 
             </div>
@@ -362,103 +207,49 @@
 
         <div class="col-xl-4 col-lg-5 col-12">
 
-            <!-- Low Stock -->
+            <!-- Low Stock: no stock quantity field on Product yet -->
 
             <div class="card mb-4">
 
                 <div class="card-header bg-white">
-
-                    <h5 class="fw-bold">
-
-                        Low Stock
-
-                    </h5>
-
+                    <h5 class="fw-bold">Low Stock</h5>
                 </div>
 
-                <ul class="list-group list-group-flush">
-
-                    <li class="list-group-item">
-
-                        HP EliteBook 840
-
-                        <span class="badge bg-danger float-end">
-
-                            2 Left
-
-                        </span>
-
-                    </li>
-
-                    <li class="list-group-item">
-
-                        Logitech Mouse
-
-                        <span class="badge bg-warning float-end">
-
-                            5 Left
-
-                        </span>
-
-                    </li>
-
-                    <li class="list-group-item">
-
-                        Dell Monitor
-
-                        <span class="badge bg-danger float-end">
-
-                            1 Left
-
-                        </span>
-
-                    </li>
-
-                </ul>
+                <div class="card-body text-center text-muted py-4">
+                    Stock-level tracking isn't set up yet — Product has no
+                    quantity field.
+                </div>
 
             </div>
 
-            <!-- Activities -->
+            <!-- Activities: real data from ActivityLog -->
 
             <div class="card">
 
                 <div class="card-header bg-white">
-
-                    <h5 class="fw-bold">
-
-                        Recent Activity
-
-                    </h5>
-
+                    <h5 class="fw-bold">Recent Activity</h5>
                 </div>
 
-                <div class="card-body">
+                <ul class="list-group list-group-flush">
 
-                    <p>
+                    {% for activity in recent_activities %}
+                    <li class="list-group-item">
 
-                        ✅ Product added
+                        <strong>{{ activity.user|default:"System" }}</strong>
+                        — {{ activity.description }}
 
-                    </p>
+                        <small class="text-muted d-block">
+                            {{ activity.created_at|date:"d M Y, H:i" }}
+                        </small>
 
-                    <p>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted text-center">
+                        No recent activity.
+                    </li>
+                    {% endfor %}
 
-                        📦 Stock transferred
-
-                    </p>
-
-                    <p>
-
-                        👤 New employee registered
-
-                    </p>
-
-                    <p>
-
-                        💰 New sale completed
-
-                    </p>
-
-                </div>
+                </ul>
 
             </div>
 

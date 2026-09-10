@@ -50,25 +50,9 @@ Products requiring attention.
 </div>
 
 
-
-
-<button class="btn btn-primary">
-
-
-<i class="bi bi-envelope me-2"></i>
-
-
-Notify Managers
-
-
-</button>
-
-
-
 </div>
 
-
-
+{% include 'components/messages.html' %}
 
 
 <!-- Alert Summary -->
@@ -95,9 +79,7 @@ Critical Stock
 
 <h2>
 
-
-5
-
+{{ critical_items|length }}
 
 </h2>
 
@@ -136,9 +118,7 @@ Low Stock
 
 <h2>
 
-
-17
-
+{{ warning_items|length }}
 
 </h2>
 
@@ -177,9 +157,7 @@ Normal
 
 <h2>
 
-
-2525
-
+{{ normal_count }}
 
 </h2>
 
@@ -269,283 +247,55 @@ Inventory Warnings
 <tbody>
 
 
-
-
+{% for item in critical_items %}
 <tr>
 
+<td>{{ item.product.name }}</td>
+
+<td>{{ item.product.category.name }}</td>
+
+<td>{{ item.agency.name }}</td>
+
+<td class="text-danger fw-bold">{{ item.quantity }}</td>
+
+<td>{{ item.minimum_stock }}</td>
+
+<td><span class="badge bg-danger">Critical</span></td>
 
 <td>
-
-
-HP EliteBook 840 G8
-
-
+<a href="{% url 'stock_adjustment' %}" class="btn btn-sm btn-primary">Restock</a>
 </td>
-
-
-
-<td>
-
-
-Laptop
-
-
-</td>
-
-
-
-<td>
-
-
-Douala
-
-
-</td>
-
-
-
-<td class="text-danger fw-bold">
-
-
-2
-
-
-</td>
-
-
-
-<td>
-
-
-10
-
-
-</td>
-
-
-
-<td>
-
-
-<span class="badge bg-danger">
-
-
-Critical
-
-
-</span>
-
-
-</td>
-
-
-
-
-<td>
-
-
-<button class="btn btn-sm btn-primary">
-
-
-Restock
-
-
-</button>
-
-
-</td>
-
 
 </tr>
+{% endfor %}
 
-
-
-
-
-
+{% for item in warning_items %}
 <tr>
 
+<td>{{ item.product.name }}</td>
+
+<td>{{ item.product.category.name }}</td>
+
+<td>{{ item.agency.name }}</td>
+
+<td>{{ item.quantity }}</td>
+
+<td>{{ item.minimum_stock }}</td>
+
+<td><span class="badge bg-warning">Low</span></td>
 
 <td>
-
-
-Dell Monitor
-
-
+<a href="{% url 'stock_adjustment' %}" class="btn btn-sm btn-primary">Restock</a>
 </td>
-
-
-
-<td>
-
-
-Accessories
-
-
-</td>
-
-
-
-<td>
-
-
-Yaoundé
-
-
-</td>
-
-
-
-<td>
-
-
-5
-
-
-</td>
-
-
-
-<td>
-
-
-15
-
-
-</td>
-
-
-
-<td>
-
-
-<span class="badge bg-warning">
-
-
-Low
-
-
-</span>
-
-
-</td>
-
-
-
-
-<td>
-
-
-<button class="btn btn-sm btn-primary">
-
-
-Restock
-
-
-</button>
-
-
-</td>
-
 
 </tr>
+{% endfor %}
 
-
-
-
-
-
-
+{% if not critical_items and not warning_items %}
 <tr>
-
-
-<td>
-
-
-Canon Printer
-
-
-</td>
-
-
-
-<td>
-
-
-Printer
-
-
-</td>
-
-
-
-<td>
-
-
-Bafoussam
-
-
-</td>
-
-
-
-<td>
-
-
-1
-
-
-</td>
-
-
-
-<td>
-
-
-8
-
-
-</td>
-
-
-
-<td>
-
-
-<span class="badge bg-danger">
-
-
-Critical
-
-
-</span>
-
-
-</td>
-
-
-
-
-<td>
-
-
-<button class="btn btn-sm btn-primary">
-
-
-Restock
-
-
-</button>
-
-
-</td>
-
-
+<td colspan="7" class="text-center text-muted py-4">Nothing needs attention right now.</td>
 </tr>
-
-
-
-
+{% endif %}
 
 
 </tbody>

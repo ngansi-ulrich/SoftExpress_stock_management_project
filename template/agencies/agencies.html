@@ -1,6 +1,5 @@
-{% load static %}
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}
 Agencies
 {% endblock %}
@@ -44,7 +43,9 @@ Agencies
 
     </div>
 
-    <!-- Cards -->
+    {% include 'components/messages.html' %}
+
+    <!-- Summary Cards -->
 
     <div class="row g-4 mb-4">
 
@@ -56,11 +57,9 @@ Agencies
 
                     <div>
 
-                        <h4>Douala</h4>
+                        <h4>{{ agencies|length }}</h4>
 
-                        <p>Products : 850</p>
-
-                        <p>Employees : 12</p>
+                        <p>Total Agencies</p>
 
                     </div>
 
@@ -77,31 +76,17 @@ Agencies
         </div>
 
         <div class="col-lg-4">
-
             <div class="card dashboard-card">
-
                 <div class="d-flex justify-content-between">
-
                     <div>
-
-                        <h4>Yaoundé</h4>
-
-                        <p>Products : 620</p>
-
-                        <p>Employees : 9</p>
-
+                        <h4>{{ active_agencies_count }}</h4>
+                        <p>Active Agencies</p>
                     </div>
-
                     <div class="icon bg-success-soft">
-
-                        <i class="bi bi-building"></i>
-
+                        <i class="bi bi-check-circle"></i>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
 
         <div class="col-lg-4">
@@ -112,17 +97,15 @@ Agencies
 
                     <div>
 
-                        <h4>Bafoussam</h4>
+                        <h4>{{ total_employees }}</h4>
 
-                        <p>Products : 340</p>
-
-                        <p>Employees : 7</p>
+                        <p>Total Employees</p>
 
                     </div>
 
                     <div class="icon bg-warning-soft">
 
-                        <i class="bi bi-building"></i>
+                        <i class="bi bi-people"></i>
 
                     </div>
 
@@ -171,8 +154,6 @@ Agencies
 
                         <th>Employees</th>
 
-                        <th>Products</th>
-
                         <th>Status</th>
 
                         <th>Action</th>
@@ -183,101 +164,67 @@ Agencies
 
                     <tbody>
 
+                    {% for agency in agencies %}
                     <tr>
 
-                        <td>1</td>
-
-                        <td>Douala</td>
-
-                        <td>Jean Pierre</td>
-
-                        <td>Douala</td>
-
-                        <td>12</td>
-
-                        <td>850</td>
+                        <td>{{ forloop.counter }}</td>
 
                         <td>
+                            <a href="{% url 'agency_detail' agency.pk %}">
+                                {{ agency.name }}
+                            </a>
+                        </td>
 
-                            <span class="badge bg-success">
+                        <td>{{ agency.manager|default:"—" }}</td>
 
-                                Active
+                        <td>{{ agency.city }}</td>
 
-                            </span>
+                        <td>{{ agency.employee_count }}</td>
 
+                        <td>
+                            {% if agency.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
                         </td>
 
                         <td>
 
-                            <button class="btn btn-sm btn-primary">
+                            <a
+                                href="{% url 'agency_detail' agency.pk %}"
+                                class="btn btn-sm btn-primary">
 
                                 View
 
-                            </button>
+                            </a>
 
-                            <button class="btn btn-sm btn-warning">
+                            <a
+                                href="{% url 'agency_update' agency.pk %}"
+                                class="btn btn-sm btn-warning">
 
                                 Edit
 
-                            </button>
+                            </a>
 
-                            <button class="btn btn-sm btn-danger">
+                            <a
+                                href="{% url 'agency_delete' agency.pk %}"
+                                class="btn btn-sm btn-danger">
 
                                 Delete
 
-                            </button>
+                            </a>
 
                         </td>
 
                     </tr>
-
+                    {% empty %}
                     <tr>
-
-                        <td>2</td>
-
-                        <td>Yaoundé</td>
-
-                        <td>Eric Ndzi</td>
-
-                        <td>Yaoundé</td>
-
-                        <td>9</td>
-
-                        <td>620</td>
-
-                        <td>
-
-                            <span class="badge bg-success">
-
-                                Active
-
-                            </span>
-
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No agencies yet.
                         </td>
-
-                        <td>
-
-                            <button class="btn btn-sm btn-primary">
-
-                                View
-
-                            </button>
-
-                            <button class="btn btn-sm btn-warning">
-
-                                Edit
-
-                            </button>
-
-                            <button class="btn btn-sm btn-danger">
-
-                                Delete
-
-                            </button>
-
-                        </td>
-
                     </tr>
+                    {% endfor %}
 
                     </tbody>
 
