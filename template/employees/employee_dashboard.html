@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Employee Dashboard | SoftExpress ERP{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    {% if no_agency %}
+    <div class="alert alert-warning">Your account is not assigned to an agency. Please contact your administrator.</div>
+    {% else %}
+    <div class="mb-4">
+        <h2 class="fw-bold">Employee Dashboard</h2>
+        <p class="text-muted mb-0">{{ agency.name }} Agency</p>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card h-100">
+                <div class="d-flex justify-content-between">
+                    <div><p>Today's Sales</p><h2>{{ todays_sales_count }}</h2></div>
+                    <div class="icon bg-primary-soft"><i class="bi bi-cart-check"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card h-100">
+                <div class="d-flex justify-content-between">
+                    <div><p>Today's Revenue</p><h2>{{ todays_revenue }} FCFA</h2></div>
+                    <div class="icon bg-success-soft"><i class="bi bi-cash-stack"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card h-100">
+                <div class="d-flex justify-content-between">
+                    <div><p>Products Sold</p><h2>{{ products_sold }}</h2></div>
+                    <div class="icon bg-primary-soft"><i class="bi bi-box-seam"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card h-100">
+                <div class="d-flex justify-content-between">
+                    <div><p>Customers Served</p><h2>{{ customers_served }}</h2></div>
+                    <div class="icon bg-success-soft"><i class="bi bi-people"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Recent Sales</h6>
+                    <a href="{% url 'employee_sales' %}" class="btn btn-sm btn-outline-primary">View all</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead><tr><th>Sale</th><th>Customer</th><th>Date</th><th>Amount</th></tr></thead>
+                        <tbody>
+                        {% for sale in recent_sales %}
+                        <tr>
+                            <td><a href="{% url 'employee_sale_detail' sale.pk %}">{{ sale.sale_number }}</a></td>
+                            <td>{{ sale.customer.first_name }} {{ sale.customer.last_name }}</td>
+                            <td>{{ sale.created_at|date:'d M Y H:i' }}</td>
+                            <td>{{ sale.total_amount }} FCFA</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center text-muted py-4">No sales yet.</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 text-danger">Stock Alerts</h6>
+                    <a href="{% url 'employee_stock_alerts' %}" class="btn btn-sm btn-outline-danger">View all</a>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for item in low_stock_items %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        {{ item.product.name }}
+                        <span class="badge {% if item.quantity == 0 %}bg-danger{% else %}bg-warning{% endif %}">{{ item.quantity }} left</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted text-center py-4">No stock alerts.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

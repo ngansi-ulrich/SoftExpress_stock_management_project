@@ -53,15 +53,18 @@ const DICT = {
 /* ══════════════════════════════════════════
    STATE
 ══════════════════════════════════════════ */
-let lang  = 'fr';
-let theme = 'dark';
+const languageStorageKey = 'softexpress-language';
+const themeStorageKey = 'softexpress-theme';
+let lang  = localStorage.getItem(languageStorageKey) === 'en' ? 'en' : 'fr';
+let theme = localStorage.getItem(themeStorageKey) === 'light' ? 'light' : 'dark';
 
 /* ══════════════════════════════════════════
    LANGUAGE SWITCHER
 ══════════════════════════════════════════ */
 function setLang(l) {
-  if (l === lang) return;
+  if (l !== 'fr' && l !== 'en') return;
   lang = l;
+  localStorage.setItem(languageStorageKey, l);
   const t = DICT[l];
 
   document.body.classList.add('fading');
@@ -93,22 +96,29 @@ function setLang(l) {
   }, 130);
 }
 
+if (document.getElementById('btnFR') || document.getElementById('btnEN')) {
+  setLang(lang);
+}
+
 /* ══════════════════════════════════════════
    THEME SWITCHER
 ══════════════════════════════════════════ */
 function toggleTheme() {
   theme = theme === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('smTheme', theme);
+  document.documentElement.setAttribute('data-bs-theme', theme);
+  document.documentElement.classList.toggle('dark', theme === 'dark');
+  document.documentElement.classList.toggle('light', theme === 'light');
+  localStorage.setItem(themeStorageKey, theme);
 }
 
 /* Restore saved theme on load */
 (function initTheme() {
-  const saved = localStorage.getItem('smTheme');
-  if (saved && saved !== theme) {
-    theme = saved;
-    document.documentElement.setAttribute('data-theme', theme);
-  }
+  document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.setAttribute('data-bs-theme', theme);
+  document.documentElement.classList.toggle('dark', theme === 'dark');
+  document.documentElement.classList.toggle('light', theme === 'light');
+  document.documentElement.lang = lang;
 })();
 
 /* ══════════════════════════════════════════

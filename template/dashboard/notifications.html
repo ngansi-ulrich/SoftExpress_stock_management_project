@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notifications | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h3 class="mb-1">Notifications</h3>
+        <p class="text-muted mb-0">
+            Live alerts based on current data — not a message history.
+        </p>
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    {% if no_agency %}
+    <div class="alert alert-warning">
+        Your account is not assigned to an agency. Please contact your administrator.
+    </div>
+    {% else %}
+
+    {% if total_alerts == 0 %}
+    <div class="alert alert-success text-center py-4">
+        <i class="bi bi-check-circle me-2"></i>
+        Nothing needs your attention right now.
+    </div>
+    {% endif %}
+
+    {% if out_of_stock %}
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <h6 class="mb-0 text-danger"><i class="bi bi-x-circle me-2"></i>Out of Stock</h6>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for item in out_of_stock %}
+            <li class="list-group-item d-flex justify-content-between">
+                {{ item.product.name }}{% if item.agency %} ({{ item.agency.name }}){% endif %}
+                <a href="{% url 'stock_adjustment' %}" class="btn btn-sm btn-outline-danger">Restock</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if low_stock %}
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <h6 class="mb-0 text-warning"><i class="bi bi-exclamation-triangle me-2"></i>Low Stock</h6>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for item in low_stock %}
+            <li class="list-group-item d-flex justify-content-between">
+                {{ item.product.name }}{% if item.agency %} ({{ item.agency.name }}){% endif %}
+                <span class="badge bg-warning">{{ item.quantity }} left</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if pending_transfers %}
+    <div class="card">
+        <div class="card-header bg-white">
+            <h6 class="mb-0 text-primary"><i class="bi bi-arrow-left-right me-2"></i>Pending Transfers</h6>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for t in pending_transfers %}
+            <li class="list-group-item d-flex justify-content-between">
+                {{ t.transfer_number }} — {{ t.product.name }}
+                ({{ t.source_agency.name }} &rarr; {{ t.destination_agency.name }})
+                <a href="{% url 'transfer_detail' t.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

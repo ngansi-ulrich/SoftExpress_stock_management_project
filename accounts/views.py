@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Q
 from logs.models import ActivityLog
 from .models import Employee
-from .forms import UserCreateForm, UserEditForm, SetPasswordForm
+from .forms import UserCreateForm, UserEditForm, SetPasswordForm, ChangePasswordForm
 
 
 def Login(request):
@@ -32,7 +32,23 @@ def Login(request):
                 action="LOGIN",
                 description="User logged into system"
             )
-            return redirect("dashboard")
+
+            employee = getattr(user, 'employee', None)
+            if user.is_superuser or (employee and employee.role == 'CEO'):
+                return redirect("dashboard")
+            elif employee and employee.role == 'MANAGER':
+                return redirect("manager_dashboard")
+            elif employee and employee.role == 'STAFF':
+                return redirect("employee_dashboard")
+            else:
+                # authenticated but no Employee record / no role at all —
+                # never fall through to the CEO dashboard by default
+                messages.error(
+                    request,
+                    "Your account isn't fully set up yet. Contact your administrator."
+                )
+                logout(request)
+                return redirect("Login")
 
         messages.error(
             request,
@@ -260,3 +276,38 @@ def user_reset_password(request, pk):
     return render(request, 'accounts/user_reset_password.html', {
         'form': form, 'target_user': target_user,
     })
+
+
+@login_required
+def change_password(request):
+    """Self-service password change for whoever is logged in — distinct
+    from user_reset_password, which is the CEO setting someone else's
+    password from the Users admin page."""
+    form = ChangePasswordForm(request.POST or None, user=request.user)
+
+    if request.method == 'POST' and form.is_valid():
+        request.user.set_password(form.cleaned_data['new_password'])
+        request.user.save()
+        # keeps the user logged in after changing their own password —
+        # without this, Django invalidates the session on password change
+        update_session_auth_hash(request, request.user)
+
+        ActivityLog.objects.create(
+            user=request.user,
+            action="PASSWORD_CHANGED",
+            description="User changed their own password"
+        )
+        messages.success(request, "Your password has been updated.")
+        return redirect('settings_view')
+
+    return render(request, 'accounts/change_password.html', {'form': form})
+
+
+@login_required
+def profile_view(request):
+    """Read-only self view. Role/agency changes are deliberately NOT
+    editable here — those go through the CEO-only Users module
+    (user_edit), never through a self-service page."""
+    from .permissions import get_employee
+    employee = get_employee(request.user)
+    return render(request, 'accounts/profile.html', {'employee': employee})

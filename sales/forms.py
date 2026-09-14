@@ -16,8 +16,10 @@ class SaleForm(forms.ModelForm):
             'payment_status': forms.Select(attrs={'class': 'form-select'}),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, customer_queryset=None, **kwargs):
         super().__init__(*args, **kwargs)
+        if customer_queryset is not None:
+            self.fields['customer'].queryset = customer_queryset
         self.fields['customer'].empty_label = "Select customer"
         self.fields['agency'].empty_label = "Select agency"
 
@@ -33,8 +35,10 @@ class SaleItemForm(forms.ModelForm):
             'unit_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, product_queryset=None, **kwargs):
         super().__init__(*args, **kwargs)
+        if product_queryset is not None:
+            self.fields['product'].queryset = product_queryset
         self.fields['product'].empty_label = "Select product"
         self.fields['quantity'].required = False
         self.fields['unit_price'].required = False

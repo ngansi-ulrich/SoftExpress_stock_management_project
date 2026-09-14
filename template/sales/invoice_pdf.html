@@ -1,0 +1,132 @@
+<html>
+<head>
+<style>
+    @page { size: A4; margin: 2cm; }
+    body { font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: #1F2937; }
+    .header-table { width: 100%; border-bottom: 2px solid #2563EB; padding-bottom: 10px; margin-bottom: 15px; }
+    .company-name { font-size: 20px; font-weight: bold; }
+    .muted { color: #6B7280; }
+    .invoice-title { font-size: 18px; font-weight: bold; text-align: right; }
+    .section-table { width: 100%; margin-bottom: 15px; }
+    .section-label { font-size: 9px; text-transform: uppercase; color: #6B7280; font-weight: bold; }
+    table.items { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+    table.items th { background: #F9FAFB; padding: 6px; text-align: left; border-bottom: 1px solid #E5E7EB; }
+    table.items td { padding: 6px; border-bottom: 1px solid #F3F4F6; }
+    .text-right { text-align: right; }
+    .totals-table { width: 100%; }
+    .total-row td { font-weight: bold; border-top: 2px solid #1F2937; padding-top: 8px; }
+    .footer { margin-top: 30px; text-align: center; color: #6B7280; font-size: 10px; border-top: 1px solid #E5E7EB; padding-top: 15px; }
+    .badge { padding: 2px 8px; border-radius: 3px; color: white; font-size: 10px; }
+    .badge-success { background: #16A34A; }
+    .badge-warning { background: #F59E0B; }
+    .badge-danger { background: #DC2626; }
+</style>
+</head>
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td width="60%">
+                <div class="company-name">SOFTEXPRESS</div>
+                <div class="muted">Computer Sales &amp; Services</div>
+                <div class="muted">Douala &bull; Yaound&eacute; &bull; Bafoussam</div>
+            </td>
+            <td width="40%">
+                <div class="invoice-title">INVOICE</div>
+                <div style="text-align: right;">{{ invoice.invoice_number }}</div>
+                <div class="muted" style="text-align: right;">{{ invoice.issued_at|date:"d F Y" }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="section-table">
+        <tr>
+            <td width="50%" style="vertical-align: top;">
+                <div class="section-label">Bill To</div>
+                {% if sale.customer %}
+                <div><strong>{{ sale.customer.first_name }} {{ sale.customer.last_name }}</strong></div>
+                <div>{{ sale.customer.phone }}</div>
+                <div>{{ sale.customer.email|default:"" }}</div>
+                {% else %}
+                <div class="muted">No client on record.</div>
+                {% endif %}
+            </td>
+            <td width="50%" style="vertical-align: top;">
+                <div class="section-label">Agency</div>
+                {% if sale.agency %}
+                <div><strong>SoftExpress {{ sale.agency.name }}</strong></div>
+                <div>{{ sale.agency.address|default:"" }}</div>
+                <div>{{ sale.agency.phone|default:"" }}</div>
+                {% else %}
+                <div class="muted">No agency on record.</div>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <table class="items">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Product</th>
+                <th class="text-right">Qty</th>
+                <th class="text-right">Unit Price</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.product.name }}</td>
+                <td class="text-right">{{ item.quantity }}</td>
+                <td class="text-right">{{ item.unit_price }}</td>
+                <td class="text-right">{{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="totals-table">
+        <tr class="total-row">
+            <td width="70%"></td>
+            <td width="15%">TOTAL</td>
+            <td width="15%" class="text-right">{{ sale.total_amount }} FCFA</td>
+        </tr>
+    </table>
+
+    <table class="section-table" style="margin-top: 20px;">
+        <tr>
+            <td width="50%" style="vertical-align: top;">
+                <div class="section-label">Payment Information</div>
+                <div>Method: {{ sale.get_payment_method_display }}</div>
+                <div>
+                    Status:
+                    {% if sale.payment_status == 'PAID' %}
+                    <span class="badge badge-success">PAID</span>
+                    {% elif sale.payment_status == 'PARTIAL' %}
+                    <span class="badge badge-warning">PARTIAL</span>
+                    {% else %}
+                    <span class="badge badge-danger">PENDING</span>
+                    {% endif %}
+                </div>
+            </td>
+            <td width="50%" style="vertical-align: top;">
+                <div class="section-label">&nbsp;</div>
+                <div>Amount: {{ sale.total_amount }} FCFA</div>
+                {% if balance_known %}
+                <div>Balance: {{ balance }} FCFA</div>
+                {% else %}
+                <div class="muted">Balance: partial amount paid isn't tracked yet</div>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        Thank you for choosing SoftExpress.<br/>
+        SoftExpress &bull; Douala &bull; Yaound&eacute; &bull; Bafoussam
+    </div>
+
+</body>
+</html>

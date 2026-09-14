@@ -1,4 +1,4 @@
-{% load static %}
+{% load i18n static %}
 
 <nav class="navbar navbar-expand-lg px-3 py-2 sticky-top soft-navbar">
 
@@ -24,10 +24,10 @@
 
             </span>
 
-            <input
-                type="search"
-                class="form-control"
-                placeholder="Search products, employees, clients..."
+                <input
+                    type="search"
+                    class="form-control"
+                    placeholder="{% translate 'Search products, employees, clients...' %}"
             >
 
         </div>
@@ -55,15 +55,25 @@
             <ul class="dropdown-menu dropdown-menu-end shadow">
 
                 <li>
-                    <a class="dropdown-item" href="#">
-                        🇬🇧 English
-                    </a>
+                    <form action="{% url 'set_language' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        <input type="hidden" name="language" value="en">
+                        <button type="submit" class="dropdown-item{% if request.LANGUAGE_CODE|slice:':2' == 'en' %} active{% endif %}" onclick="localStorage.setItem('softexpress-language', 'en')" aria-label="{% translate 'Switch to English' %}">
+                            🇬🇧 English
+                        </button>
+                    </form>
                 </li>
 
                 <li>
-                    <a class="dropdown-item" href="#">
-                        🇫🇷 Français
-                    </a>
+                    <form action="{% url 'set_language' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        <input type="hidden" name="language" value="fr">
+                        <button type="submit" class="dropdown-item{% if request.LANGUAGE_CODE|slice:':2' == 'fr' %} active{% endif %}" onclick="localStorage.setItem('softexpress-language', 'fr')" aria-label="{% translate 'Switch to French' %}">
+                            🇫🇷 Français
+                        </button>
+                    </form>
                 </li>
 
             </ul>
@@ -78,7 +88,8 @@
                 class="btn nav-icon-btn theme-button"
                 id="themeToggle"
                 type="button"
-                title="Change theme">
+                title="{% translate 'Change theme' %}"
+                aria-label="{% translate 'Change theme' %}">
 
                 <i class="bi bi-moon-stars-fill"></i>
 
@@ -99,9 +110,11 @@
 
                 <i class="bi bi-bell"></i>
 
+                {% if navbar_notification_count > 0 %}
                 <span class="notification-badge">
-                    4
+                    {{ navbar_notification_count }}
                 </span>
+                {% endif %}
 
             </button>
 
@@ -116,139 +129,62 @@
                     <div>
 
                         <h6 class="mb-0 fw-bold">
-                            Notifications
+                                {% translate "Notifications" %}
                         </h6>
 
                         <small class="text-muted">
-                            You have 4 new notifications
+                            {% if navbar_notification_count > 0 %}
+                            You have {{ navbar_notification_count }} alert{{ navbar_notification_count|pluralize }}
+                            {% else %}
+                            Nothing needs your attention
+                            {% endif %}
                         </small>
 
                     </div>
 
+                    {% if navbar_notification_count > 0 %}
                     <span class="badge bg-danger">
-                        4
+                        {{ navbar_notification_count }}
                     </span>
+                    {% endif %}
 
                 </div>
 
 
-                <!-- Notification 1 -->
-                <a href="#" class="notification-item">
+                {% for item in navbar_notification_items %}
+                <a href="{{ item.url }}" class="notification-item">
 
-                    <div class="notification-icon bg-danger-subtle text-danger">
+                    <div class="notification-icon bg-{{ item.color }}-subtle text-{{ item.color }}">
 
-                        <i class="bi bi-exclamation-triangle"></i>
-
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            Low stock alert
-                        </strong>
-
-                        <p>
-                            HP EliteBook stock is low.
-                        </p>
-
-                        <small>
-                            Just now
-                        </small>
-
-                    </div>
-
-                </a>
-
-
-                <!-- Notification 2 -->
-                <a href="#" class="notification-item">
-
-                    <div class="notification-icon bg-success-subtle text-success">
-
-                        <i class="bi bi-check-circle"></i>
+                        <i class="bi {{ item.icon }}"></i>
 
                     </div>
 
                     <div>
 
                         <strong>
-                            Transfer completed
+                            {{ item.title }}
                         </strong>
 
                         <p>
-                            Stock transfer completed successfully.
+                            {{ item.text }}
                         </p>
-
-                        <small>
-                            10 min ago
-                        </small>
 
                     </div>
 
                 </a>
-
-
-                <!-- Notification 3 -->
-                <a href="#" class="notification-item">
-
-                    <div class="notification-icon bg-primary-subtle text-primary">
-
-                        <i class="bi bi-cart-check"></i>
-
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            New sale
-                        </strong>
-
-                        <p>
-                            A new sale has been recorded.
-                        </p>
-
-                        <small>
-                            30 min ago
-                        </small>
-
-                    </div>
-
-                </a>
-
-
-                <!-- Notification 4 -->
-                <a href="#" class="notification-item">
-
-                    <div class="notification-icon bg-warning-subtle text-warning">
-
-                        <i class="bi bi-person-plus"></i>
-
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            New employee
-                        </strong>
-
-                        <p>
-                            A new employee has been added.
-                        </p>
-
-                        <small>
-                            1 hour ago
-                        </small>
-
-                    </div>
-
-                </a>
+                {% empty %}
+                <div class="notification-item text-muted text-center py-3">
+                        {% translate "You're all caught up." %}
+                </div>
+                {% endfor %}
 
 
                 <!-- Footer -->
                 <div class="notification-footer">
 
-                    <a href="#">
-                        View all notifications
+                    <a href="{% url 'notifications_view' %}">
+                            {% translate "View all notifications" %}
                     </a>
 
                 </div>
@@ -283,7 +219,7 @@
                     </strong>
 
                     <small>
-                        CEO
+                        {% if request.user.is_superuser %}Administrator{% else %}{{ request.user.employee.get_role_display|default:"—" }}{% endif %}
                     </small>
 
                 </div>
@@ -312,7 +248,7 @@
                             </strong>
 
                             <small>
-                                CEO
+                                {% if request.user.is_superuser %}Administrator{% else %}{{ request.user.employee.get_role_display|default:"—" }}{% endif %}
                             </small>
 
                         </div>
@@ -329,7 +265,7 @@
 
                 <li>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{% url 'profile_view' %}">
 
                         <i class="bi bi-person-circle me-2"></i>
 
@@ -342,7 +278,7 @@
 
                 <li>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{% url 'settings_view' %}">
 
                         <i class="bi bi-gear me-2"></i>
 

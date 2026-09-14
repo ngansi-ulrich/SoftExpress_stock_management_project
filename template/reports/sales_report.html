@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sales Report | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Sales Report</h2>
+        <p class="text-muted mb-0">Detailed sales analytics{% if not is_ceo_viewing %} for your agency{% endif %}.</p>
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="{% url 'reports_dashboard' %}" class="btn btn-outline-secondary btn-sm">Dashboard</a>
+        <a href="{% url 'sales_report' %}" class="btn btn-primary btn-sm">Sales</a>
+        <a href="{% url 'inventory_report' %}" class="btn btn-outline-secondary btn-sm">Inventory</a>
+        {% if is_ceo_viewing %}
+        <a href="{% url 'agency_report' %}" class="btn btn-outline-secondary btn-sm">Agencies</a>
+        {% endif %}
+        <a href="{% url 'employee_report' %}" class="btn btn-outline-secondary btn-sm">Employees</a>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="d-flex flex-wrap gap-3 align-items-end">
+
+                <div style="flex: 1 1 150px;">
+                    <label class="form-label small text-muted mb-1">Start Date</label>
+                    <input type="date" name="start_date" class="form-control" value="{{ start_date|date:'Y-m-d' }}">
+                </div>
+
+                <div style="flex: 1 1 150px;">
+                    <label class="form-label small text-muted mb-1">End Date</label>
+                    <input type="date" name="end_date" class="form-control" value="{{ end_date|date:'Y-m-d' }}">
+                </div>
+
+                {% if is_ceo_viewing %}
+                <div style="flex: 1 1 160px;">
+                    <label class="form-label small text-muted mb-1">Agency</label>
+                    <select name="agency" class="form-select">
+                        <option value="">All Agencies</option>
+                        {% for agency in agencies %}
+                        <option value="{{ agency.id }}" {% if selected_agency == agency.id|stringformat:"s" %}selected{% endif %}>
+                            {{ agency.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+
+                <div style="flex: 1 1 160px;">
+                    <label class="form-label small text-muted mb-1">Category</label>
+                    <select name="category" class="form-select">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="flex: 1 1 150px;">
+                    <label class="form-label small text-muted mb-1">Payment Method</label>
+                    <select name="payment_method" class="form-select">
+                        <option value="">All Methods</option>
+                        <option value="CASH" {% if selected_payment_method == "CASH" %}selected{% endif %}>Cash</option>
+                        <option value="MOMO" {% if selected_payment_method == "MOMO" %}selected{% endif %}>Mobile Money</option>
+                        <option value="BANK" {% if selected_payment_method == "BANK" %}selected{% endif %}>Bank Transfer</option>
+                        <option value="CARD" {% if selected_payment_method == "CARD" %}selected{% endif %}>Card</option>
+                    </select>
+                </div>
+
+                <div style="flex: 0 1 auto;">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </div>
+
+                <div style="flex: 0 1 auto;">
+                    <a href="{% url 'sales_report' %}" class="btn btn-outline-secondary">Reset</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    {% if not has_data %}
+    <div class="alert alert-secondary text-center py-4">
+        No sales found for the selected filters.
+    </div>
+    {% endif %}
+
+    <!-- Summary cards -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Total Sales</p><h2>{{ total_sales }}</h2></div>
+                    <div class="icon bg-primary-soft"><i class="bi bi-cart-check"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Total Revenue</p><h2>{{ total_revenue }} FCFA</h2></div>
+                    <div class="icon bg-success-soft"><i class="bi bi-cash-stack"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Average Order Value</p><h2>{{ avg_order_value }} FCFA</h2></div>
+                    <div class="icon bg-primary-soft"><i class="bi bi-graph-up"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Products Sold</p><h2>{{ products_sold }}</h2></div>
+                    <div class="icon bg-warning-soft"><i class="bi bi-box-seam"></i></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Sales by category / payment method -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header"><h6 class="mb-0">Sales by Category</h6></div>
+                <ul class="list-group list-group-flush">
+                    {% for c in sales_by_category %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        {{ c.product__category__name|default:"Uncategorized" }}
+                        <span>{{ c.revenue }} FCFA</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted text-center">No data.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header"><h6 class="mb-0">Sales by Payment Method</h6></div>
+                <ul class="list-group list-group-flush">
+                    {% for p in sales_by_payment %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        {{ p.payment_method }}
+                        <span>{{ p.total }} FCFA</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted text-center">No data.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Top Products -->
+    <div class="card mb-4">
+        <div class="card-header"><h6 class="mb-0">Top Products</h6></div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead><tr><th>Product</th><th class="text-end">Qty Sold</th><th class="text-end">Revenue</th></tr></thead>
+                <tbody>
+                    {% for p in top_products %}
+                    <tr><td>{{ p.product__name }}</td><td class="text-end">{{ p.qty }}</td><td class="text-end">{{ p.revenue }} FCFA</td></tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center text-muted py-4">No products sold in this period.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top Customers -->
+    <div class="card mb-4">
+        <div class="card-header"><h6 class="mb-0">Top Customers</h6></div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead><tr><th>Customer</th><th class="text-end">Orders</th><th class="text-end">Total Spent</th></tr></thead>
+                <tbody>
+                    {% for c in top_customers %}
+                    <tr><td>{{ c.customer__first_name }} {{ c.customer__last_name }}</td><td class="text-end">{{ c.count }}</td><td class="text-end">{{ c.total }} FCFA</td></tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center text-muted py-4">No customers in this period.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if is_ceo_viewing %}
+    <!-- Agency Performance — CEO only, doesn't make sense scoped to one agency -->
+    <div class="card">
+        <div class="card-header"><h6 class="mb-0">Agency Sales Performance</h6></div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead><tr><th>Agency</th><th class="text-end">Sales</th><th class="text-end">Revenue</th></tr></thead>
+                <tbody>
+                    {% for a in agency_performance %}
+                    <tr><td>{{ a.agency__name }}</td><td class="text-end">{{ a.count }}</td><td class="text-end">{{ a.revenue }} FCFA</td></tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center text-muted py-4">No data.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

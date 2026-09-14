@@ -74,12 +74,19 @@ body {
   background: var(--bg-base);
   font-family: 'Nunito', sans-serif;
   color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
+  align-items: stretch;
+  justify-content: flex-start;
   overflow: hidden;
   position: relative;
   transition: background .4s, color .4s;
+}
+
+body.app-shell {
+  display: block;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-height: 100vh;
 }
 
 /* ══════════════════════════════════════════
@@ -174,7 +181,7 @@ body {
 ══════════════════════════════════════════ */
 .card {
   position: relative; z-index: 10;
-  width: 100%; max-width: 440px; margin: 20px;
+  width: 100%; max-width: none; margin: 0;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 20px;

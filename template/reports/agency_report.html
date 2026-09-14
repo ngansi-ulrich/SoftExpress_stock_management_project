@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Agency Performance | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Agency Performance Report</h2>
+        <p class="text-muted mb-0">Compare all agencies side by side.</p>
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="{% url 'reports_dashboard' %}" class="btn btn-outline-secondary btn-sm">Dashboard</a>
+        <a href="{% url 'sales_report' %}" class="btn btn-outline-secondary btn-sm">Sales</a>
+        <a href="{% url 'inventory_report' %}" class="btn btn-outline-secondary btn-sm">Inventory</a>
+        <a href="{% url 'agency_report' %}" class="btn btn-primary btn-sm">Agencies</a>
+        <a href="{% url 'employee_report' %}" class="btn btn-outline-secondary btn-sm">Employees</a>
+    </div>
+
+    {% if not has_data %}
+    <div class="alert alert-secondary text-center py-4">No active agencies found.</div>
+    {% else %}
+
+    <div class="card mb-4">
+        <div class="card-header"><h6 class="mb-0">Revenue by Agency</h6></div>
+        <div class="card-body">
+            <canvas id="agencyRevenueChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">Agency Performance</h6>
+            <form method="get" class="d-flex gap-2 align-items-center">
+                <label class="small text-muted mb-0">Sort by</label>
+                <select name="sort" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="revenue" {% if sort == "revenue" %}selected{% endif %}>Revenue</option>
+                    <option value="sales" {% if sort == "sales" %}selected{% endif %}>Sales</option>
+                    <option value="products" {% if sort == "products" %}selected{% endif %}>Products Sold</option>
+                    <option value="clients" {% if sort == "clients" %}selected{% endif %}>Clients</option>
+                    <option value="stock" {% if sort == "stock" %}selected{% endif %}>Stock</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Agency</th>
+                        <th class="text-end">Revenue</th>
+                        <th class="text-end">Sales</th>
+                        <th class="text-end">Products Sold</th>
+                        <th class="text-end">Clients</th>
+                        <th class="text-end">Stock</th>
+                        <th class="text-end">Low Stock</th>
+                        <th class="text-end">Employees</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in agencies_data %}
+                    <tr>
+                        <td>{{ d.agency.name }}</td>
+                        <td class="text-end">{{ d.revenue }} FCFA</td>
+                        <td class="text-end">{{ d.sales_count }}</td>
+                        <td class="text-end">{{ d.products_sold }}</td>
+                        <td class="text-end">{{ d.clients }}</td>
+                        <td class="text-end">{{ d.current_stock }}</td>
+                        <td class="text-end">{{ d.low_stock }}</td>
+                        <td class="text-end">{{ d.employees }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'agency_detail' d.agency.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% endif %}
+
+</div>
+
+{{ revenue_labels|json_script:"agency-revenue-labels" }}
+{{ revenue_data|json_script:"agency-revenue-data" }}
+
+<script>
+(function () {
+    var labels = JSON.parse(document.getElementById('agency-revenue-labels').textContent);
+    var data = JSON.parse(document.getElementById('agency-revenue-data').textContent);
+    var ctx = document.getElementById('agencyRevenueChart');
+    if (ctx && typeof Chart !== 'undefined') {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{ label: 'Revenue (FCFA)', data: data, backgroundColor: '#2563EB' }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+    }
+})();
+</script>
+
+{% endblock %}

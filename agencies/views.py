@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from accounts.models import Employee
+from accounts.permissions import role_required
 from .models import Agency
 from .forms import AgencyForm
 
@@ -21,12 +22,12 @@ def _agency_list_context(extra=None):
     return context
 
 
-@login_required
+@role_required('CEO')
 def agency_list(request):
     return render(request, 'agencies/agencies.html', _agency_list_context())
 
 
-@login_required
+@role_required('CEO')
 def agency_create(request):
     form = AgencyForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -42,7 +43,7 @@ def agency_create(request):
     return redirect('agency_list')
 
 
-@login_required
+@role_required('CEO')
 def agency_update(request, pk):
     agency = get_object_or_404(Agency, pk=pk)
     form = AgencyForm(request.POST or None, instance=agency)
@@ -52,14 +53,14 @@ def agency_update(request, pk):
     return render(request, 'agencies/agency_edit.html', {'form': form, 'agency': agency})
 
 
-@login_required
+@role_required('CEO')
 def agency_delete(request, pk):
     agency = get_object_or_404(Agency, pk=pk)
     agency.delete()
     return redirect('agency_list')
 
 
-@login_required
+@role_required('CEO')
 def agency_detail(request, pk):
     agency = get_object_or_404(
         Agency.objects.annotate(employee_count=Count('employee')),

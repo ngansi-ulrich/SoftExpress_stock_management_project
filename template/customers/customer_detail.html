@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Details | SoftExpress ERP{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold"><i class="bi bi-person-vcard me-2"></i>{{ customer.first_name }} {{ customer.last_name }}</h2>
+            <p class="text-muted mb-0">{{ customer.customer_id }}</p>
+        </div>
+        <a href="{% url 'customer_list' %}" class="btn btn-outline-primary"><i class="bi bi-arrow-left me-1"></i>Back to customers</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header"><h6 class="mb-0">Contact information</h6></div>
+                <div class="card-body">
+                    <p><strong>Phone:</strong> {{ customer.phone }}</p>
+                    <p><strong>Email:</strong> {{ customer.email|default:'Not provided' }}</p>
+                    <p class="mb-0"><strong>Address:</strong> {{ customer.address|default:'Not provided' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-header"><h6 class="mb-0">Purchase history</h6></div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead><tr><th>Sale</th><th>Date</th><th>Agency</th><th>Amount</th></tr></thead>
+                        <tbody>
+                        {% for sale in purchases %}
+                        <tr>
+                            <td><a href="{% url 'sale_detail' sale.pk %}">{{ sale.sale_number }}</a></td>
+                            <td>{{ sale.created_at|date:'d M Y H:i' }}</td>
+                            <td>{{ sale.agency.name }}</td>
+                            <td>{{ sale.total_amount }} FCFA</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center text-muted py-4">No purchases recorded.</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

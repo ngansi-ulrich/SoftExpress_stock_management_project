@@ -113,3 +113,37 @@ class SetPasswordForm(forms.Form):
             except ValidationError as e:
                 self.add_error('new_password', e)
         return cleaned
+
+
+class ChangePasswordForm(forms.Form):
+    """Self-service — any logged-in user changing their own password,
+    as opposed to SetPasswordForm which is the CEO setting someone
+    else's password from the Users admin page."""
+    current_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+
+    def clean_current_password(self):
+        current = self.cleaned_data['current_password']
+        if not self.user.check_password(current):
+            raise forms.ValidationError("Your current password is incorrect.")
+        return current
+
+    def clean(self):
+        cleaned = super().clean()
+        new = cleaned.get('new_password')
+        confirm = cleaned.get('confirm_password')
+        if new and confirm and new != confirm:
+            self.add_error('confirm_password', "Passwords don't match.")
+        if new:
+            from django.contrib.auth.password_validation import validate_password
+            from django.core.exceptions import ValidationError
+            try:
+                validate_password(new, user=self.user)
+            except ValidationError as e:
+                self.add_error('new_password', e)
+        return cleaned

@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Employee Performance | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Employee Performance Report</h2>
+        <p class="text-muted mb-0">Sales performance{% if not is_ceo_viewing %} for your agency's team{% endif %}.</p>
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="{% url 'reports_dashboard' %}" class="btn btn-outline-secondary btn-sm">Dashboard</a>
+        <a href="{% url 'sales_report' %}" class="btn btn-outline-secondary btn-sm">Sales</a>
+        <a href="{% url 'inventory_report' %}" class="btn btn-outline-secondary btn-sm">Inventory</a>
+        {% if is_ceo_viewing %}
+        <a href="{% url 'agency_report' %}" class="btn btn-outline-secondary btn-sm">Agencies</a>
+        {% endif %}
+        <a href="{% url 'employee_report' %}" class="btn btn-primary btn-sm">Employees</a>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="d-flex flex-wrap gap-3 align-items-end">
+
+                <div style="flex: 1 1 150px;">
+                    <label class="form-label small text-muted mb-1">Start Date</label>
+                    <input type="date" name="start_date" class="form-control" value="{{ start_date|date:'Y-m-d' }}">
+                </div>
+
+                <div style="flex: 1 1 150px;">
+                    <label class="form-label small text-muted mb-1">End Date</label>
+                    <input type="date" name="end_date" class="form-control" value="{{ end_date|date:'Y-m-d' }}">
+                </div>
+
+                {% if is_ceo_viewing %}
+                <div style="flex: 1 1 160px;">
+                    <label class="form-label small text-muted mb-1">Agency</label>
+                    <select name="agency" class="form-select">
+                        <option value="">All Agencies</option>
+                        {% for agency in agencies %}
+                        <option value="{{ agency.id }}" {% if selected_agency == agency.id|stringformat:"s" %}selected{% endif %}>{{ agency.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+
+                <div style="flex: 1 1 200px;">
+                    <label class="form-label small text-muted mb-1">Employee</label>
+                    <select name="employee" class="form-select">
+                        <option value="">All Employees</option>
+                        {% for emp in employees_for_filter %}
+                        <option value="{{ emp.id }}" {% if selected_employee == emp.id|stringformat:"s" %}selected{% endif %}>
+                            {{ emp.first_name }} {{ emp.last_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="flex: 0 1 auto;">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </div>
+
+                <div style="flex: 0 1 auto;">
+                    <a href="{% url 'employee_report' %}" class="btn btn-outline-secondary">Reset</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    {% if not has_data %}
+    <div class="alert alert-secondary text-center py-4">
+        No employees have recorded sales in this period.
+    </div>
+    {% else %}
+
+    <div class="card mb-4">
+        <div class="card-header"><h6 class="mb-0">Top Performers by Revenue</h6></div>
+        <div class="card-body">
+            <canvas id="employeeRevenueChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h6 class="mb-0">Employee Performance</h6></div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Rank</th><th>Employee</th>
+                        {% if is_ceo_viewing %}<th>Agency</th>{% endif %}
+                        <th class="text-end">Sales</th><th class="text-end">Revenue</th>
+                        <th class="text-end">Products Sold</th><th class="text-end">Average Sale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in performance %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ p.employee.first_name }} {{ p.employee.last_name }}</td>
+                        {% if is_ceo_viewing %}<td>{{ p.employee.agency.name|default:"—" }}</td>{% endif %}
+                        <td class="text-end">{{ p.sales_count }}</td>
+                        <td class="text-end">{{ p.revenue }} FCFA</td>
+                        <td class="text-end">{{ p.products_sold }}</td>
+                        <td class="text-end">{{ p.avg_sale }} FCFA</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% endif %}
+
+</div>
+
+{{ chart_labels|json_script:"employee-chart-labels" }}
+{{ chart_data|json_script:"employee-chart-data" }}
+
+<script>
+(function () {
+    var labels = JSON.parse(document.getElementById('employee-chart-labels').textContent);
+    var data = JSON.parse(document.getElementById('employee-chart-data').textContent);
+    var ctx = document.getElementById('employeeRevenueChart');
+    if (ctx && typeof Chart !== 'undefined') {
+        new Chart(ctx, {
+            type: 'bar',
+            data: { labels: labels, datasets: [{ label: 'Revenue (FCFA)', data: data, backgroundColor: '#16A34A' }] },
+            options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } } }
+        });
+    }
+})();
+</script>
+
+{% endblock %}

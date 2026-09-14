@@ -1,75 +1,236 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.contrib import messages
-from products.models import Product
+from django.db import transaction
+from django.db.models import F
+from accounts.permissions import get_agency_scope, get_employee, UNRESTRICTED
+from accounts.permissions import role_required
+from stock_movements.models import StockMovement
 from .models import Inventory
-from .form import StockAdjustmentForm
+from .forms import StockAdjustmentForm
 
 
 @login_required
 def inventory_list(request):
-    inventories = Inventory.objects.select_related('product', 'product__category', 'agency').all()
+    """
+    Display inventory according to the user's agency scope.
 
-    total_quantity = sum(i.quantity for i in inventories)
-    inventory_value = sum(i.quantity * i.product.selling_price for i in inventories)
-    low_stock_count = sum(1 for i in inventories if i.is_low_stock)
+    CEO/Admin:
+        Can see inventory across all agencies.
 
-    context = {
-        'inventories': inventories,
-        'total_products': Product.objects.count(),
-        'total_quantity': total_quantity,
-        'inventory_value': inventory_value,
-        'low_stock_count': low_stock_count,
-        'low_stock_items': [i for i in inventories if i.is_low_stock][:5],
-    }
-    return render(request, 'inventory/inventory.html', context)
+    Manager/Staff:
+        Can only see inventory belonging to their assigned agency.
+    """
+    scope = get_agency_scope(request.user)
+
+    if scope is False:
+        raise PermissionDenied
+
+    if scope is None:
+        messages.error(
+            request,
+            "Your account isn't assigned to an agency yet."
+        )
+
+        return render(
+            request,
+            'inventory/inventory_list.html',
+            {
+                'inventory': Inventory.objects.none(),
+                'inventory_items': Inventory.objects.none(),
+            }
+        )
+
+    if scope is UNRESTRICTED:
+        inventory_items = (
+            Inventory.objects
+            .select_related('product', 'agency')
+            .all()
+        )
+    else:
+        inventory_items = (
+            Inventory.objects
+            .select_related('product', 'agency')
+            .filter(agency=scope)
+        )
+
+    inventory_items = inventory_items.order_by('product__name')
+
+    return render(
+        request,
+        'inventory/inventory_list.html',
+        {
+            'inventory': inventory_items,
+            'inventory_items': inventory_items,
+        }
+    )
 
 
 @login_required
 def stock_alerts(request):
-    inventories = Inventory.objects.select_related('product', 'product__category', 'agency').all()
+    """
+    Display low-stock products.
 
-    low_items = [i for i in inventories if i.is_low_stock]
-    # "critical" = at or below half of minimum stock (or zero); the rest of
-    # the low-stock items are just "low"
-    critical_items = [i for i in low_items if i.quantity == 0 or i.quantity <= i.minimum_stock // 2]
-    warning_items = [i for i in low_items if i not in critical_items]
-    normal_count = inventories.count() - len(low_items)
+    CEO/Admin:
+        Can see low-stock items across all agencies.
 
-    context = {
-        'critical_items': critical_items,
-        'warning_items': warning_items,
-        'normal_count': normal_count,
-    }
-    return render(request, 'inventory/stock_alerts.html', context)
+    Manager/Staff:
+        Can only see low-stock items from their assigned agency.
+    """
+    scope = get_agency_scope(request.user)
+
+    if scope is False:
+        raise PermissionDenied
+
+    if scope is None:
+        messages.error(
+            request,
+            "Your account isn't assigned to an agency yet."
+        )
+
+        return render(
+            request,
+            'inventory/stock_alerts.html',
+            {
+                'alerts': Inventory.objects.none(),
+                'low_stock_items': Inventory.objects.none(),
+            }
+        )
+
+    inventory_items = Inventory.objects.filter(
+        quantity__lte=F('minimum_stock'))
+
+    # Apply agency-level security.
+    if scope is not UNRESTRICTED:
+        inventory_items = inventory_items.filter(
+            agency=scope
+        )
+
+    inventory_items = (
+        inventory_items
+        .select_related('product', 'agency')
+        .order_by('quantity', 'product__name')
+    )
+
+    return render(
+        request,
+        'inventory/stock_alerts.html',
+        {
+            'alerts': inventory_items,
+            'low_stock_items': inventory_items,
+        }
+    )
 
 
-@login_required
+@role_required('CEO', 'MANAGER')
 def stock_adjustment(request):
+    scope = get_agency_scope(request.user)
+
+    if scope is False:
+        raise PermissionDenied
+
+    if scope is None:
+        messages.error(
+            request,
+            "Your account isn't assigned to an agency yet — adjustments aren't possible."
+        )
+        return redirect('inventory_list')
+
     form = StockAdjustmentForm(request.POST or None)
 
+    if scope is not UNRESTRICTED:
+        form.fields['agency'].queryset = (
+            form.fields['agency']
+            .queryset
+            .filter(pk=scope.pk)
+        )
+        form.fields['agency'].initial = scope
+        form.fields['agency'].disabled = True
+
     if request.method == 'POST' and form.is_valid():
+
         product = form.cleaned_data['product']
-        agency = form.cleaned_data['agency']
+
+        agency = (
+            scope
+            if scope is not UNRESTRICTED
+            else form.cleaned_data['agency']
+        )
+
         adjustment_type = form.cleaned_data['adjustment_type']
         quantity = form.cleaned_data['quantity']
 
-        inventory, _ = Inventory.objects.get_or_create(product=product, agency=agency)
+        # PATCHED: wrapped in a transaction with row locking.
+        #
+        # - transaction.atomic() ties the Inventory save and the
+        #   StockMovement create together — if the movement log fails
+        #   to write, the quantity change rolls back too, so the two
+        #   can never drift out of sync.
+        # - select_for_update() locks the Inventory row (once it
+        #   exists) for the duration of the transaction, so two
+        #   concurrent adjustments to the same product+agency can't
+        #   both read the same "before" value and have one silently
+        #   overwrite the other.
+        with transaction.atomic():
+            inventory, created = Inventory.objects.get_or_create(
+                product=product,
+                agency=agency
+            )
+            if not created:
+                # get_or_create() already inserted+committed the row
+                # in this transaction if it was just created, so a
+                # fresh locked read is only needed for the pre-existing
+                # case — locking a row you just created yourself in
+                # the same transaction is a no-op anyway, but this
+                # avoids an unnecessary extra query on first-time rows.
+                inventory = Inventory.objects.select_for_update().get(
+                    pk=inventory.pk
+                )
 
-        if adjustment_type == 'add':
-            inventory.quantity += quantity
-        elif adjustment_type == 'remove':
-            inventory.quantity = max(0, inventory.quantity - quantity)
-        elif adjustment_type == 'correction':
-            inventory.quantity = quantity
+            before = inventory.quantity
 
-        inventory.save()
+            if adjustment_type == 'add':
+                inventory.quantity += quantity
 
-        # TODO: log this adjustment once stock_movements.models.StockMovement
-        # is wired in (reason/reference/performed_by are collected above but
-        # currently go nowhere — see stock_movements app)
+            elif adjustment_type == 'remove':
+                inventory.quantity = max(
+                    0,
+                    inventory.quantity - quantity
+                )
 
-        messages.success(request, "Stock adjustment saved.")
+            elif adjustment_type == 'correction':
+                inventory.quantity = quantity
+
+            inventory.save()
+
+            # Calculate the real stock movement.
+            delta = inventory.quantity - before
+
+            if delta == 0:
+                movement_type = None
+            elif delta > 0:
+                movement_type = 'IN'
+            else:
+                movement_type = 'OUT'
+
+            if movement_type:
+                StockMovement.objects.create(
+                    inventory=inventory,
+                    movement_type=movement_type,
+                    quantity=abs(delta),
+                    employee=get_employee(request.user),
+                )
+
+        messages.success(
+            request,
+            "Stock adjustment saved."
+        )
+
         return redirect('inventory_list')
 
-    return render(request, 'inventory/stock_adjustment.html', {'form': form})
+    return render(
+        request,
+        'inventory/stock_adjustment.html',
+        {'form': form}
+    )

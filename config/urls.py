@@ -17,12 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/Login/')),
     path('', include('accounts.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('employee/', include('employees.staff_urls')),
     path('employees/',include('employees.urls')),
     path('agencies/',include('agencies.urls')),
     path('products/',include('products.urls')),
@@ -33,4 +37,8 @@ urlpatterns = [
     path('customers/',include('customers.urls')),
     path('invoices/',include('sales.invoice_urls')),
     path('reports/', include('reports.urls')),
+    path('settings/', include('setting_app.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

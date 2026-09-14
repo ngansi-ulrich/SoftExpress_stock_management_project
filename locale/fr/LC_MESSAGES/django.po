@@ -1,0 +1,76 @@
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Switch to English"
+msgstr "Passer en anglais"
+
+msgid "Switch to French"
+msgstr "Passer en français"
+
+msgid "Change theme"
+msgstr "Changer de thème"
+
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+msgid "Agencies"
+msgstr "Agences"
+
+msgid "Products"
+msgstr "Produits"
+
+msgid "Categories"
+msgstr "Catégories"
+
+msgid "Inventory"
+msgstr "Inventaire"
+
+msgid "Transfers"
+msgstr "Transferts"
+
+msgid "Employees"
+msgstr "Employés"
+
+msgid "Clients"
+msgstr "Clients"
+
+msgid "Suppliers"
+msgstr "Fournisseurs"
+
+msgid "Sales"
+msgstr "Ventes"
+
+msgid "Invoices"
+msgstr "Factures"
+
+msgid "Reports"
+msgstr "Rapports"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "My Profile"
+msgstr "Mon profil"
+
+msgid "Settings"
+msgstr "Paramètres"
+
+msgid "Users"
+msgstr "Utilisateurs"
+
+msgid "Logout"
+msgstr "Déconnexion"
+
+msgid "Search products, employees, clients..."
+msgstr "Rechercher des produits, employés, clients..."
+
+msgid "View all notifications"
+msgstr "Voir toutes les notifications"
+
+msgid "Nothing needs your attention"
+msgstr "Rien ne nécessite votre attention"
+
+msgid "You're all caught up."
+msgstr "Vous êtes à jour."

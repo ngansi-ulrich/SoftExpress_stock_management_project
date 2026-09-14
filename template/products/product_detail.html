@@ -26,14 +26,14 @@
 
         </div>
 
+        {% if request.user.is_superuser or request.user.employee.role == 'CEO' %}
         <div>
-
             <a href="{% url 'product_update' product.pk %}" class="btn btn-warning">
                 <i class="bi bi-pencil me-2"></i>
                 Edit
             </a>
-
         </div>
+        {% endif %}
 
     </div>
 
@@ -66,6 +66,8 @@
                 <p><strong>Selling Price:</strong> {{ product.selling_price }} FCFA</p>
 
                 <p><strong>Agency:</strong> {{ product.agency|default:"—" }}</p>
+
+                <p><strong>Available Stock:</strong> {{ total_stock }}</p>
 
                 <p>
                     <strong>Serial Tracking:</strong>

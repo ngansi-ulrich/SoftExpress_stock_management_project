@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Settings | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h3 class="mb-1">Settings</h3>
+        <p class="text-muted mb-0">Configure SoftExpress ERP</p>
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <div class="row g-4">
+
+        <!-- Left nav -->
+        <div class="col-lg-3">
+            <div class="card">
+                <div class="list-group list-group-flush">
+
+                    {% if is_admin %}
+                    <a href="?tab=general" class="list-group-item list-group-item-action {% if active_tab == 'general' %}active{% endif %}">
+                        <i class="bi bi-building me-2"></i> General
+                    </a>
+                    {% endif %}
+
+                    <a href="?tab=appearance" class="list-group-item list-group-item-action {% if active_tab == 'appearance' %}active{% endif %}">
+                        <i class="bi bi-palette me-2"></i> Appearance
+                    </a>
+
+                    {% if is_admin %}
+                    <a href="?tab=security" class="list-group-item list-group-item-action {% if active_tab == 'security' %}active{% endif %}">
+                        <i class="bi bi-shield-lock me-2"></i> Security
+                    </a>
+                    {% endif %}
+
+                    <a href="?tab=notifications" class="list-group-item list-group-item-action {% if active_tab == 'notifications' %}active{% endif %}">
+                        <i class="bi bi-bell me-2"></i> Notifications
+                    </a>
+
+                    {% if is_admin %}
+                    <a href="?tab=system" class="list-group-item list-group-item-action {% if active_tab == 'system' %}active{% endif %}">
+                        <i class="bi bi-info-circle me-2"></i> System Information
+                    </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-body">
+
+                    {% if active_tab == 'general' %}
+                    <h5 class="mb-3">General Settings</h5>
+                    <form method="post" action="{% url 'settings_save_general' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label">Company Name</label>
+                                {{ general_form.company_name }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Company Email</label>
+                                {{ general_form.company_email }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Company Phone</label>
+                                {{ general_form.company_phone }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Default Language</label>
+                                {{ general_form.default_language }}
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Company Address</label>
+                                {{ general_form.company_address }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Company Logo</label>
+                                {{ general_form.company_logo }}
+                                <small class="text-muted d-block mt-1">
+                                    Note: MEDIA_ROOT wasn't confirmed configured last time settings.py was
+                                    reviewed — if upload fails, that's the first thing to check.
+                                </small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Timezone</label>
+                                {{ general_form.timezone }}
+                            </div>
+
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-4">Save Changes</button>
+
+                    </form>
+                    {% endif %}
+
+                    {% if active_tab == 'appearance' %}
+                    <h5 class="mb-3">Appearance</h5>
+                    <p class="text-muted">
+                        Dark/light mode is already handled by the theme toggle in the navbar
+                        (top-right moon/sun icon) — that control and its persistence logic
+                        aren't duplicated here to avoid running two conflicting theme systems.
+                    </p>
+                    <div class="alert alert-secondary">
+                        Interface density and sidebar-behavior options: not configured.
+                    </div>
+                    {% endif %}
+
+                    {% if active_tab == 'security' %}
+                    <h5 class="mb-3">Security</h5>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Current User:</strong> {{ request.user.username }}</p>
+                            <p class="mb-1"><strong>Last Login:</strong> {{ request.user.last_login|date:"d M Y, H:i"|default:"—" }}</p>
+                            <p class="mb-1"><strong>Session Length:</strong> {{ session_age_days }} days</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Password Policy:</strong> enforced by Django's configured validators</p>
+                            <p class="mb-1"><strong>Account Lockout:</strong> <span class="badge bg-secondary">Not configured</span></p>
+                            <p class="mb-1"><strong>Two-Factor Authentication:</strong> <span class="badge bg-secondary">Coming soon</span></p>
+                            <a href="{% url 'change_password' %}" class="btn btn-outline-primary btn-sm mt-2">
+                                <i class="bi bi-key me-2"></i>Change My Password
+                            </a>
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3">Recent Logins (all users)</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead><tr><th>User</th><th>Date</th></tr></thead>
+                            <tbody>
+                                {% for log in recent_logins %}
+                                <tr><td>{{ log.user.username }}</td><td>{{ log.created_at|date:"d M Y, H:i" }}</td></tr>
+                                {% empty %}
+                                <tr><td colspan="2" class="text-muted text-center">No login events recorded yet.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+
+                    {% if active_tab == 'notifications' %}
+                    <h5 class="mb-3">Notification Preferences</h5>
+                    <p class="text-muted small">
+                        These save for real, but nothing in the project currently sends emails/SMS/push
+                        notifications yet — this only controls what would be sent once that exists.
+                    </p>
+                    <form method="post" action="{% url 'settings_save_notifications' %}">
+                        {% csrf_token %}
+
+                        <div class="form-check form-switch mb-3">
+                            {{ notification_form.low_stock_alerts }}
+                            <label class="form-check-label">Low Stock Alerts</label>
+                        </div>
+
+                        <div class="form-check form-switch mb-3">
+                            {{ notification_form.new_sale_notifications }}
+                            <label class="form-check-label">New Sale Notifications</label>
+                        </div>
+
+                        <div class="form-check form-switch mb-3">
+                            {{ notification_form.transfer_notifications }}
+                            <label class="form-check-label">Stock Transfer Notifications</label>
+                        </div>
+
+                        <div class="form-check form-switch mb-3">
+                            {{ notification_form.system_notifications }}
+                            <label class="form-check-label">System Notifications</label>
+                        </div>
+
+                        <div class="form-check form-switch mb-4">
+                            {{ notification_form.account_notifications }}
+                            <label class="form-check-label">Account Notifications</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Preferences</button>
+
+                    </form>
+                    {% endif %}
+
+                    {% if active_tab == 'system' %}
+                    <h5 class="mb-3">System Information</h5>
+                    <table class="table table-borderless mb-0">
+                        <tr><th>Application</th><td>{{ system_info.app_name }}</td></tr>
+                        <tr><th>Version</th><td>{{ system_info.app_version }}</td></tr>
+                        <tr><th>Django Version</th><td>{{ system_info.django_version }}</td></tr>
+                        <tr><th>Database</th><td>{{ system_info.database_engine }}</td></tr>
+                        <tr><th>Environment</th><td>{{ system_info.environment }}</td></tr>
+                    </table>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

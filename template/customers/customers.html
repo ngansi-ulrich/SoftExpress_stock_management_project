@@ -90,7 +90,11 @@
 
                         <td>{{ customer.customer_id }}</td>
 
-                        <td class="fw-semibold">{{ customer.first_name }} {{ customer.last_name }}</td>
+                        <td class="fw-semibold">
+                            <a href="{% url 'customer_detail' customer.id %}">
+                                {{ customer.first_name }} {{ customer.last_name }}
+                            </a>
+                        </td>
 
                         <td>{{ customer.phone }}</td>
 
@@ -104,9 +108,11 @@
                                 <i class="bi bi-pencil"></i>
                             </a>
 
+                            {% if request.user.is_superuser or request.user.employee.role == 'CEO' or request.user.employee.role == 'MANAGER' %}
                             <a href="{% url 'customer_delete' customer.id %}" class="btn btn-sm btn-danger">
                                 <i class="bi bi-trash"></i>
                             </a>
+                            {% endif %}
 
                         </td>
 

@@ -22,6 +22,12 @@ urlpatterns = [
     ),
 
     path(
+        "<int:id>/",
+        views.customer_detail,
+        name="customer_detail"
+    ),
+
+    path(
         "delete/<int:id>/",
         views.customer_delete,
         name="customer_delete"

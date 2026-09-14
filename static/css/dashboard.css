@@ -40,6 +40,13 @@ body{
     overflow-x:hidden;
 }
 
+body.app-shell {
+    display: block;
+    align-items: initial;
+    justify-content: initial;
+    position: static;
+}
+
 /*====================================
 Wrapper
 ====================================*/
@@ -669,6 +676,7 @@ body {
 .wrapper {
     height: 100vh;
     display: flex;
+    width: 100%;
     overflow: hidden;
 }
 
@@ -741,6 +749,7 @@ body {
 .content {
     flex: 1;
     min-height: 0;
+    min-width: 0;
 
     overflow-y: auto;
     overflow-x: hidden;

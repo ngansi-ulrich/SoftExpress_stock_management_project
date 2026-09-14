@@ -1,4 +1,4 @@
-{% load static %}
+{% load i18n static %}
 <aside class="sidebar">
 
     <div class="logo">
@@ -9,12 +9,20 @@
 
     </div>
 
+    {% with role=request.user.employee.role %}
+
     <ul class="menu">
 
         <li>
+            {% if role == 'CEO' or request.user.is_superuser %}
             <a href="{% url 'dashboard' %}">
+            {% elif role == 'MANAGER' %}
+            <a href="{% url 'manager_dashboard' %}">
+            {% else %}
+            <a href="{% url 'employee_dashboard' %}">
+            {% endif %}
                 <i class="bi bi-speedometer2"></i>
-                Dashboard
+                {% translate "Dashboard" %}
             </a>
         </li>
 
@@ -22,84 +30,95 @@
             MANAGEMENT
         </li>
 
+        {% if role == 'CEO' or request.user.is_superuser %}
         <li>
             <a href="{% url 'agency_list' %}">
                 <i class="bi bi-building"></i>
-                Agencies
+                {% translate "Agencies" %}
             </a>
         </li>
+        {% endif %}
 
         <li>
-            <a href="{% url 'product_list' %}">
+            <a href="{% if role == 'STAFF' %}{% url 'employee_products' %}{% else %}{% url 'product_list' %}{% endif %}">
                 <i class="bi bi-box-seam"></i>
-                Products
+                {% translate "Products" %}
             </a>
         </li>
 
+        {% if role == 'CEO' or request.user.is_superuser %}
         <li>
             <a href="{% url 'category_list' %}">
                 <i class="bi bi-diagram-3"></i>
-                Categories
+                {% translate "Categories" %}
             </a>
         </li>
+        {% endif %}
 
         <li>
-            <a href="{% url 'inventory_list' %}">
+            <a href="{% if role == 'STAFF' %}{% url 'employee_inventory' %}{% else %}{% url 'inventory_list' %}{% endif %}">
                 <i class="bi bi-archive"></i>
-                Inventory
+                {% translate "Inventory" %}
             </a>
         </li>
 
+        {% if role != 'STAFF' %}
         <li>
             <a href="{% url 'transfer_list' %}">
                 <i class="bi bi-arrow-left-right"></i>
-                Transfers
+                {% translate "Transfers" %}
             </a>
         </li>
+        {% endif %}
 
         <li class="menu-title">
             PEOPLE
         </li>
 
+        {% if role != 'STAFF' %}
         <li>
             <a href="{% url 'employee_list' %}">
                 <i class="bi bi-people"></i>
-                Employees
+                {% translate "Employees" %}
             </a>
         </li>
+        {% endif %}
 
         <li>
-            <a href="{% url 'customer_list' %}">
+            <a href="{% if role == 'STAFF' %}{% url 'employee_customers' %}{% else %}{% url 'customer_list' %}{% endif %}">
                 <i class="bi bi-person-vcard"></i>
-                Customer
+                {% translate "Clients" %}
             </a>
         </li>
 
+        {% if role == 'CEO' or request.user.is_superuser %}
         <li>
             <a href="{% url 'supplier_list' %}">
                 <i class="bi bi-truck"></i>
-                Suppliers
+                {% translate "Suppliers" %}
             </a>
         </li>
+        {% endif %}
 
         <li class="menu-title">
             SALES
         </li>
 
         <li>
-            <a href="{% url 'sale_list' %}">
+            <a href="{% if role == 'STAFF' %}{% url 'employee_sales' %}{% else %}{% url 'sale_list' %}{% endif %}">
                 <i class="bi bi-cart-check"></i>
-                Sales
+                {% translate "Sales" %}
             </a>
         </li>
 
         <li>
-            <a href="{% url 'invoice_list' %}">
+            <a href="{% if role == 'STAFF' %}{% url 'employee_invoices' %}{% else %}{% url 'invoice_list' %}{% endif %}">
                 <i class="bi bi-receipt"></i>
-                Invoices
+                {% translate "Invoices" %}
             </a>
         </li>
 
+        {% if role != 'STAFF' %}
         <li class="menu-title">
             ANALYTICS
         </li>
@@ -107,17 +126,29 @@
         <li>
             <a href="{% url 'reports_dashboard' %}">
                 <i class="bi bi-bar-chart-line"></i>
-                Reports
+                {% translate "Reports" %}
+            </a>
+        </li>
+        {% endif %}
+
+        <li class="menu-title">
+            ACCOUNT
+        </li>
+        <li>
+            <a href="{% if role == 'STAFF' %}{% url 'employee_notifications' %}{% else %}{% url 'notifications_view' %}{% endif %}">
+                <i class="bi bi-bell"></i>
+                {% translate "Notifications" %}
             </a>
         </li>
 
-        <!-- <li>
-            <a href="#">
-                <i class="bi bi-graph-up-arrow"></i>
-                Analytics
+        <li>
+            <a href="{% if role == 'STAFF' %}{% url 'employee_profile' %}{% else %}{% url 'profile_view' %}{% endif %}">
+                <i class="bi bi-person-circle"></i>
+                {% translate "My Profile" %}
             </a>
-        </li> -->
+        </li>
 
+        {% if role == 'CEO' or request.user.is_superuser %}
         <li class="menu-title">
             ADMINISTRATION
         </li>
@@ -125,24 +156,27 @@
         <li>
             <a href="{% url 'user_list' %}">
                 <i class="bi bi-person-gear"></i>
-                Users
+                {% translate "Users" %}
             </a>
         </li>
+        {% endif %}
 
         <li>
-            <a href="#">
+            <a href="{% url 'settings_view' %}">
                 <i class="bi bi-gear"></i>
-                Settings
+                {% translate "Settings" %}
             </a>
         </li>
 
         <li>
             <a href="{% url 'Logout' %}">
                 <i class="bi bi-box-arrow-right"></i>
-                Logout
+                {% translate "Logout" %}
             </a>
         </li>
 
     </ul>
+
+    {% endwith %}
 
 </aside>

@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inventory Report | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">Inventory Report</h2>
+        <p class="text-muted mb-0">Stock analytics{% if not is_ceo_viewing %} for your agency{% endif %}.</p>
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="{% url 'reports_dashboard' %}" class="btn btn-outline-secondary btn-sm">Dashboard</a>
+        <a href="{% url 'sales_report' %}" class="btn btn-outline-secondary btn-sm">Sales</a>
+        <a href="{% url 'inventory_report' %}" class="btn btn-primary btn-sm">Inventory</a>
+        {% if is_ceo_viewing %}
+        <a href="{% url 'agency_report' %}" class="btn btn-outline-secondary btn-sm">Agencies</a>
+        {% endif %}
+        <a href="{% url 'employee_report' %}" class="btn btn-outline-secondary btn-sm">Employees</a>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="d-flex flex-wrap gap-3 align-items-end">
+
+                {% if is_ceo_viewing %}
+                <div style="flex: 1 1 160px;">
+                    <label class="form-label small text-muted mb-1">Agency</label>
+                    <select name="agency" class="form-select">
+                        <option value="">All Agencies</option>
+                        {% for agency in agencies %}
+                        <option value="{{ agency.id }}" {% if selected_agency == agency.id|stringformat:"s" %}selected{% endif %}>{{ agency.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+
+                <div style="flex: 1 1 160px;">
+                    <label class="form-label small text-muted mb-1">Category</label>
+                    <select name="category" class="form-select">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="flex: 0 1 auto;">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </div>
+
+                <div style="flex: 0 1 auto;">
+                    <a href="{% url 'inventory_report' %}" class="btn btn-outline-secondary">Reset</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Summary cards -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Total Products</p><h2>{{ total_products }}</h2></div>
+                    <div class="icon bg-primary-soft"><i class="bi bi-box-seam"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Total Stock</p><h2>{{ total_stock_quantity }}</h2></div>
+                    <div class="icon bg-success-soft"><i class="bi bi-boxes"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Inventory Value</p><h2>{{ inventory_value }} FCFA</h2></div>
+                    <div class="icon bg-primary-soft"><i class="bi bi-cash-stack"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Low Stock</p><h2>{{ low_stock_count }}</h2></div>
+                    <div class="icon bg-warning-soft"><i class="bi bi-exclamation-triangle"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Out of Stock</p><h2>{{ out_of_stock_count }}</h2></div>
+                    <div class="icon bg-danger-soft"><i class="bi bi-x-circle"></i></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Stock breakdowns -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header"><h6 class="mb-0">Stock by Category</h6></div>
+                <ul class="list-group list-group-flush">
+                    {% for c in stock_by_category %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        {{ c.product__category__name|default:"Uncategorized" }}
+                        <span>{{ c.quantity }} units</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted text-center">No data.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        {% if is_ceo_viewing %}
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header"><h6 class="mb-0">Stock by Agency</h6></div>
+                <ul class="list-group list-group-flush">
+                    {% for a in stock_by_agency %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        {{ a.agency__name }}
+                        <span>{{ a.quantity }} units</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted text-center">No data.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    {% if movement_analysis_available %}
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-4">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Stock In</p><h2>{{ movement_counts.in }}</h2></div>
+                    <div class="icon bg-success-soft"><i class="bi bi-box-arrow-in-down"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Stock Out</p><h2>{{ movement_counts.out }}</h2></div>
+                    <div class="icon bg-danger-soft"><i class="bi bi-box-arrow-up"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card dashboard-card">
+                <div class="d-flex justify-content-between">
+                    <div><p>Transfers</p><h2>{{ movement_counts.transfer }}</h2></div>
+                    <div class="icon bg-primary-soft"><i class="bi bi-arrow-left-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header"><h6 class="mb-0">Recent Stock Movements</h6></div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr><th>Date</th><th>Product</th><th>Type</th><th class="text-end">Quantity</th><th>By</th></tr>
+                </thead>
+                <tbody>
+                    {% for m in recent_movements %}
+                    <tr>
+                        <td>{{ m.created_at|date:"d M Y, H:i" }}</td>
+                        <td>{{ m.inventory.product.name }}</td>
+                        <td>
+                            {% if m.movement_type == 'IN' %}
+                            <span class="badge bg-success">In</span>
+                            {% elif m.movement_type == 'OUT' %}
+                            <span class="badge bg-danger">Out</span>
+                            {% else %}
+                            <span class="badge bg-primary">Transfer</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">{{ m.quantity }}</td>
+                        <td>{{ m.employee.first_name|default:"—" }} {{ m.employee.last_name }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">No stock movements recorded yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-secondary mb-4">
+        <strong>Stock Movement Analysis</strong> isn't available yet.
+    </div>
+    {% endif %}
+
+    <!-- Table -->
+    <div class="card">
+        <div class="card-header"><h6 class="mb-0">Current Stock</h6></div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Product</th><th>Code</th><th>Category</th>
+                        {% if is_ceo_viewing %}<th>Agency</th>{% endif %}
+                        <th class="text-end">Current Stock</th><th class="text-end">Minimum</th>
+                        <th>Status</th><th class="text-end">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in inventory_table %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.product.product_code }}</td>
+                        <td>{{ item.product.category.name|default:"—" }}</td>
+                        {% if is_ceo_viewing %}<td>{{ item.agency.name }}</td>{% endif %}
+                        <td class="text-end">{{ item.quantity }}</td>
+                        <td class="text-end">{{ item.minimum_stock }}</td>
+                        <td>
+                            {% if item.quantity == 0 %}
+                            <span class="badge bg-danger">Out of Stock</span>
+                            {% elif item.is_low_stock %}
+                            <span class="badge bg-warning">Low Stock</span>
+                            {% else %}
+                            <span class="badge bg-success">In Stock</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">{{ item.line_value }} FCFA</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="text-center text-muted py-4">No inventory records match this filter.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

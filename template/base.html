@@ -1,10 +1,21 @@
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
+<html lang="{{ request.LANGUAGE_CODE|slice:':2' }}" data-bs-theme="dark" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+        (function () {
+            const theme = localStorage.getItem('softexpress-theme');
+            const activeTheme = theme === 'light' || theme === 'dark' ? theme : 'dark';
+            document.documentElement.dataset.theme = activeTheme;
+            document.documentElement.dataset.bsTheme = activeTheme;
+            document.documentElement.classList.toggle('dark', activeTheme === 'dark');
+            document.documentElement.classList.toggle('light', activeTheme === 'light');
+        }());
+    </script>
 
     <title>
         {% block title %}SoftExpress ERP{% endblock %}
@@ -34,7 +45,7 @@
     {% block extra_css %}{% endblock %}
 </head>
 
-<body>
+<body class="app-shell">
 
     <div class="wrapper">
 

@@ -16,6 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 /* ======================================================
+   Theme Toggle (Dark / Light)
+   Previously this button had zero JS behind it — dashboard.css already
+   defines the .dark class and its CSS variables, this just applies it.
+====================================================== */
+
+/* ======================================================
    Counter Animation
 ====================================================== */
 

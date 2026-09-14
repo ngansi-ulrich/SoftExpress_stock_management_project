@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Employees | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+        <div>
+            <h3 class="mb-1">Employees</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Employees</li>
+                </ol>
+            </nav>
+        </div>
+
+        <a href="{% url 'add_employee' %}" class="btn btn-primary">
+            <i class="bi bi-person-plus me-1"></i>
+            Add Employee
+        </a>
+
+    </div>
+
+    {% include 'components/messages.html' %}
+
+    <!-- Stat Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-6 col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-primary-subtle text-primary">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h4 class="mb-0">{{ employees|length }}</h4>
+                    <small class="text-muted">Total Employees</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-success-subtle text-success">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <h4 class="mb-0">{{ douala_count }}</h4>
+                    <small class="text-muted">Douala</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-warning-subtle text-warning">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <h4 class="mb-0">{{ yaounde_count }}</h4>
+                    <small class="text-muted">Yaoundé</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-info-subtle text-info">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <h4 class="mb-0">{{ bafoussam_count }}</h4>
+                    <small class="text-muted">Bafoussam</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Employees Table -->
+    <div class="card table-card">
+
+        <div class="card-header">
+            <h6 class="mb-0">Employee List</h6>
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Role</th>
+                            <th>Agency</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for employee in employees %}
+                        <tr>
+
+                            <td>
+                                <div class="fw-semibold">{{ employee.first_name }} {{ employee.last_name }}</div>
+                            </td>
+
+                            <td>{{ employee.get_role_display }}</td>
+
+                            <td>{{ employee.agency.name }}</td>
+
+                            <td>{{ employee.phone }}</td>
+
+                            <td>{{ employee.email }}</td>
+
+                            <td class="text-end">
+
+                                <a
+                                    href="{% url 'employee_edit' employee.id %}"
+                                    class="btn btn-sm btn-icon"
+                                    title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <a
+                                    href="{% url 'employee_delete' employee.id %}"
+                                    class="btn btn-sm btn-icon text-danger"
+                                    title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+
+                            </td>
+
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No employees found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

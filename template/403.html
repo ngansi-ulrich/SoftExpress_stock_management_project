@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Access Denied | SoftExpress ERP{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+
+    <div class="text-center">
+        <i class="bi bi-shield-lock" style="font-size: 4rem; color: var(--danger);"></i>
+        <h2 class="fw-bold mt-3">Access Denied</h2>
+        <p class="text-muted">You don't have permission to view this page.</p>
+        {% if request.user.is_superuser or request.user.employee.role == 'CEO' %}
+        <a href="{% url 'dashboard' %}" class="btn btn-primary mt-2">Back to Dashboard</a>
+        {% else %}
+        <a href="{% url 'manager_dashboard' %}" class="btn btn-primary mt-2">Back to Dashboard</a>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

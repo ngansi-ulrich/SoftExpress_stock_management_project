@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+
 {% block title %}Products{% endblock %}
 
 {% block content %}
@@ -23,6 +23,7 @@
 
         </div>
 
+        {% if request.user.is_superuser or request.user.employee.role == 'CEO' %}
         <div>
 
             <button
@@ -37,6 +38,7 @@
             </button>
 
         </div>
+        {% endif %}
 
     </div>
 
@@ -49,8 +51,15 @@
         <div class="col-xl-4 col-md-6">
 
             <div class="card dashboard-card">
-                <p>Total Products</p>
-                <h2>{{ total_products }}</h2>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total Products</p>
+                        <h2>{{ total_products }}</h2>
+                    </div>
+                    <div class="icon bg-primary-soft">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -58,8 +67,15 @@
         <div class="col-xl-4 col-md-6">
 
             <div class="card dashboard-card">
-                <p>Total Categories</p>
-                <h2>{{ total_categories }}</h2>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total Categories</p>
+                        <h2>{{ total_categories }}</h2>
+                    </div>
+                    <div class="icon bg-success-soft">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -67,8 +83,15 @@
         <div class="col-xl-4 col-md-6">
 
             <div class="card dashboard-card">
-                <p><a href="{% url 'category_list' %}">Manage Categories</a></p>
-                <h2><i class="bi bi-diagram-3"></i></h2>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p><a href="{% url 'category_list' %}">Manage Categories</a></p>
+                        <h2>&nbsp;</h2>
+                    </div>
+                    <div class="icon bg-warning-soft">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -124,6 +147,7 @@
                             View
                         </a>
 
+                        {% if request.user.is_superuser or request.user.employee.role == 'CEO' %}
                         <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-warning">
                             Edit
                         </a>
@@ -131,6 +155,7 @@
                         <a href="{% url 'product_delete' product.pk %}" class="btn btn-sm btn-danger">
                             Delete
                         </a>
+                        {% endif %}
 
                     </td>
 

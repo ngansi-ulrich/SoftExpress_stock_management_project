@@ -1,6 +1,15 @@
 from django.db import models
+from agencies.models import Agency
 
 class Customer(models.Model):
+
+    agency = models.ForeignKey(
+        Agency,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='customers',
+    )
 
     customer_id = models.CharField(
         max_length=20,
