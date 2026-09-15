@@ -203,14 +203,23 @@
                 type="button"
                 aria-expanded="false">
 
-
+                {% if request.user.employee.profile_picture %}
+                <img
+                    src="{{ request.user.employee.profile_picture.url }}"
+                    class="rounded-circle user-avatar"
+                    width="40"
+                    height="40"
+                    alt="Profile picture"
+                    data-profile-image-trigger>
+                {% else %}
                 <img
                     src="{% static 'img/avatar.png' %}"
                     class="rounded-circle user-avatar"
                     width="40"
                     height="40"
-                    alt="User">
-
+                    alt="Default profile picture"
+                    data-profile-image-trigger>
+                {% endif %}
 
                 <div class="user-info d-none d-md-block ms-2">
 
@@ -234,12 +243,23 @@
 
                     <div class="dropdown-user-header">
 
+                        {% if request.user.employee.profile_picture %}
+                        <img
+                            src="{{ request.user.employee.profile_picture.url }}"
+                            class="rounded-circle"
+                            width="45"
+                            height="45"
+                            alt="Profile picture"
+                            data-profile-image-trigger>
+                        {% else %}
                         <img
                             src="{% static 'img/avatar.png' %}"
                             class="rounded-circle"
                             width="45"
                             height="45"
-                            alt="User">
+                            alt="Default profile picture"
+                            data-profile-image-trigger>
+                        {% endif %}
 
                         <div>
 
@@ -310,8 +330,39 @@
 
             </ul>
 
+            <div class="profile-image-lightbox" data-profile-image-lightbox hidden role="dialog" aria-modal="true" aria-label="Profile picture">
+                <button type="button" class="profile-image-lightbox-close" data-profile-image-close aria-label="Close profile picture">&times;</button>
+                <img data-profile-image-preview alt="Profile picture">
+            </div>
+
         </li>
 
     </ul>
 
 </nav>
+
+    <script>
+        (() => {
+            const lightbox = document.querySelector('[data-profile-image-lightbox]');
+            if (!lightbox || lightbox.dataset.initialized) return;
+            lightbox.dataset.initialized = 'true';
+            const preview = lightbox.querySelector('[data-profile-image-preview]');
+            const close = () => { lightbox.hidden = true; };
+
+            document.querySelectorAll('[data-profile-image-trigger]').forEach((trigger) => {
+                trigger.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    preview.src = trigger.currentSrc || trigger.src;
+                    lightbox.hidden = false;
+                });
+            });
+            lightbox.querySelector('[data-profile-image-close]').addEventListener('click', close);
+            lightbox.addEventListener('click', (event) => {
+                if (event.target === lightbox) close();
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') close();
+            });
+        })();
+    </script>

@@ -719,6 +719,201 @@ body {
     background: #777;
 }
 
+/* Unified application palette */
+[data-theme="light"] {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --sidebar: #eef5fb;
+    --sidebar-hover: #e4f0fc;
+    --background: #f4f8fc;
+    --card: #ffffff;
+    --text: #16324f;
+    --muted: #5f7891;
+    --border: #dbeafe;
+}
+
+[data-theme="dark"] {
+    --primary: #60a5fa;
+    --primary-dark: #3b82f6;
+    --sidebar: #06294a;
+    --sidebar-hover: #0d4775;
+    --background: #082b4d;
+    --card: #0d3c67;
+    --text: #e8f3ff;
+    --muted: #a9c7e3;
+    --border: #24618f;
+}
+
+[data-theme="light"] .sidebar {
+    color: var(--text);
+    border-right: 1px solid var(--border);
+}
+
+[data-theme="light"] .navbar,
+[data-theme="light"] .soft-navbar,
+[data-theme="light"] .footer {
+    background: #f8fbff !important;
+    color: var(--text);
+}
+
+[data-theme="dark"] .navbar,
+[data-theme="dark"] .soft-navbar,
+[data-theme="dark"] .footer {
+    background: #0d3c67 !important;
+    color: var(--text);
+}
+
+[data-theme="light"] .card {
+    background: #ffffff;
+    color: var(--text);
+    border: 1px solid #c7d9ea;
+    box-shadow: 0 5px 20px rgba(37, 99, 235, .10);
+}
+
+[data-theme="dark"] .card {
+    background: #0d3c67;
+    color: var(--text);
+    border: 1px solid #2d6d9e;
+    box-shadow: 0 8px 24px rgba(0, 18, 40, .32);
+}
+
+[data-theme="light"] .menu-title {
+    color: #5f7891;
+}
+
+[data-theme="light"] .menu li a {
+    color: #315a82;
+}
+
+[data-theme="light"] .menu li a:hover {
+    color: var(--primary-dark);
+}
+
+[data-theme="dark"] .table thead {
+    background: #0b4777;
+}
+
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td {
+    color: var(--text);
+    border-color: #24618f;
+}
+
+[data-theme="dark"] .table tbody tr:hover {
+    background: #104b78;
+}
+
+[data-theme="light"] .table thead {
+    background: #eff6ff;
+}
+
+[data-theme="light"] .table th {
+    color: #315a82;
+}
+
+[data-theme="light"] .table td {
+    border-color: #e5effb;
+}
+
+[data-theme="light"] .table tbody tr:hover {
+    background: #f8fbff;
+}
+
+[data-theme="dark"] .list-group,
+[data-theme="dark"] .list-group-item,
+[data-theme="dark"] .card-header,
+[data-theme="dark"] .dropdown-menu,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .bg-white {
+    background-color: #0d3c67 !important;
+    color: var(--text);
+    border-color: #24618f;
+}
+
+[data-theme="dark"] .list-group-item:hover,
+[data-theme="dark"] .dropdown-item:hover {
+    background-color: #104b78 !important;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .list-group-item,
+[data-theme="dark"] .table td,
+[data-theme="dark"] .table th {
+    border-color: #2d6d9e !important;
+}
+
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] .input-group-text {
+    background-color: #082b4d;
+    color: var(--text);
+    border-color: #24618f;
+}
+
+[data-theme="dark"] .form-control::placeholder {
+    color: #a9c7e3;
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+    background-color: #0d3c67;
+    color: #ffffff;
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 .2rem rgba(96, 165, 250, .2);
+}
+
+[data-theme="dark"] .user-menu {
+    background-color: #0d3c67 !important;
+    color: var(--text) !important;
+    border-color: #24618f !important;
+}
+
+[data-theme="dark"] .breadcrumb,
+[data-theme="dark"] .bg-light,
+[data-theme="dark"] .pagination,
+[data-theme="dark"] .page-link {
+    background-color: #0d3c67 !important;
+    color: var(--text) !important;
+    border-color: #24618f !important;
+}
+
+[data-theme="dark"] .breadcrumb-item.active,
+[data-theme="dark"] .breadcrumb-item + .breadcrumb-item::before {
+    color: #a9c7e3;
+}
+
+[data-theme="light"] .list-group,
+[data-theme="light"] .list-group-item,
+[data-theme="light"] .card-header,
+[data-theme="light"] .dropdown-menu,
+[data-theme="light"] .modal-content,
+[data-theme="light"] .bg-white {
+    background-color: #ffffff !important;
+    color: var(--text);
+    border-color: #dbeafe;
+}
+
+[data-theme="light"] .list-group-item,
+[data-theme="light"] .table td,
+[data-theme="light"] .table th {
+    border-color: #c7d9ea !important;
+}
+
+[data-theme="light"] .user-menu {
+    background-color: #ffffff !important;
+    color: var(--text) !important;
+    border-color: #dbeafe !important;
+}
+
+[data-theme="light"] .breadcrumb,
+[data-theme="light"] .bg-light,
+[data-theme="light"] .pagination,
+[data-theme="light"] .page-link {
+    background-color: #f8fbff !important;
+    color: var(--text) !important;
+    border-color: #dbeafe !important;
+}
+
 /* ==========================================
    MAIN CONTENT SCROLLBAR
 ========================================== */

@@ -217,6 +217,59 @@
 .user-avatar {
     object-fit: cover;
     border: 2px solid var(--border);
+    cursor: zoom-in;
+}
+
+.profile-image-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: grid;
+    place-items: center;
+    padding: 32px;
+    background: rgba(0, 0, 0, .82);
+}
+
+.profile-image-lightbox[hidden] {
+    display: none;
+}
+
+.profile-image-lightbox img {
+    max-width: min(90vw, 720px);
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.profile-image-lightbox-close {
+    position: absolute;
+    top: 18px;
+    right: 24px;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font-size: 36px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.profile-avatar {
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.profile-avatar {
+    width: 128px;
+    height: 128px;
+    border: 3px solid var(--border);
 }
 
 .user-info strong {

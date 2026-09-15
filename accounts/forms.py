@@ -147,3 +147,34 @@ class ChangePasswordForm(forms.Form):
             except ValidationError as e:
                 self.add_error('new_password', e)
         return cleaned
+
+
+class ProfilePictureForm(forms.ModelForm):
+    ALLOWED_FORMATS = {'JPEG', 'PNG', 'WEBP'}
+    MAX_SIZE = 5 * 1024 * 1024
+
+    remove_picture = forms.BooleanField(
+        required=False,
+        label='Remove current picture',
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+    )
+
+    class Meta:
+        model = Employee
+        fields = ['profile_picture']
+        widgets = {
+            'profile_picture': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/jpeg,image/png,image/webp',
+            }),
+        }
+
+    def clean_profile_picture(self):
+        picture = self.cleaned_data.get('profile_picture')
+        if not picture or not hasattr(picture, 'image'):
+            return picture
+        if picture.size > self.MAX_SIZE:
+            raise ValidationError('Profile pictures must be 5 MB or smaller.')
+        if picture.image.format not in self.ALLOWED_FORMATS:
+            raise ValidationError('Profile pictures must be JPG, PNG, or WEBP images.')
+        return picture

@@ -7,7 +7,13 @@ from django.db import transaction
 from django.db.models import Q
 from logs.models import ActivityLog
 from .models import Employee
-from .forms import UserCreateForm, UserEditForm, SetPasswordForm, ChangePasswordForm
+from .forms import (
+    UserCreateForm,
+    UserEditForm,
+    SetPasswordForm,
+    ChangePasswordForm,
+    ProfilePictureForm,
+)
 
 
 def Login(request):
@@ -310,4 +316,40 @@ def profile_view(request):
     (user_edit), never through a self-service page."""
     from .permissions import get_employee
     employee = get_employee(request.user)
-    return render(request, 'accounts/profile.html', {'employee': employee})
+    if employee is None and request.user.is_superuser:
+        email = request.user.email or f'{request.user.username}@local.invalid'
+        if Employee.objects.filter(email=email).exists():
+            email = f'{request.user.username}+{request.user.pk}@local.invalid'
+        employee = Employee.objects.create(
+            user=request.user,
+            first_name=request.user.first_name or request.user.username,
+            last_name=request.user.last_name or 'Administrator',
+            email=email,
+            phone='',
+            role='CEO',
+        )
+    form = ProfilePictureForm(
+        data=request.POST or None,
+        files=request.FILES or None,
+        instance=employee,
+    )
+
+    if request.method == 'POST':
+        if employee is None:
+            messages.error(request, "Your account has no linked employee record.")
+        elif form.is_valid():
+            old_picture = employee.profile_picture.name if employee.profile_picture else None
+            updated_employee = form.save(commit=False)
+            if form.cleaned_data.get('remove_picture'):
+                updated_employee.profile_picture = None
+            updated_employee.save()
+            new_picture = updated_employee.profile_picture.name if updated_employee.profile_picture else None
+            if old_picture and old_picture != new_picture:
+                updated_employee.profile_picture.storage.delete(old_picture)
+            messages.success(request, "Your profile picture was updated.")
+            return redirect('profile_view')
+
+    return render(request, 'accounts/profile.html', {
+        'employee': employee,
+        'picture_form': form,
+    })
